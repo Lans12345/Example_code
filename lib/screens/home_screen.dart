@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:the_serve_new/screens/map/map_screen.dart';
 import 'package:the_serve_new/widgets/service_container.dart';
 import 'package:the_serve_new/widgets/text_widget.dart';
 
@@ -25,7 +26,10 @@ class HomeScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ServiceContainer(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const MapScreen()));
+                    },
                     label: 'Laundry Shops',
                     color: Colors.pinkAccent[700]!,
                     icon: Icons.local_laundry_service),
