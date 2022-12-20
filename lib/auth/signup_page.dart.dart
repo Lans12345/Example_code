@@ -182,74 +182,82 @@ class _SignupPageState extends State<SignupPage> {
             const SizedBox(
               height: 30,
             ),
-            ButtonWidget(
-                onPressed: () async {
-                  try {
-                    await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                        email: email, password: password);
-                    addUser(name, contactNumber, email);
-                    showDialog(
-                        barrierDismissible: false,
-                        context: context,
-                        builder: (context) {
-                          return Dialog(
-                            child: SizedBox(
-                                height: 300,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Icon(
-                                      Icons.check_circle_outline_outlined,
-                                      size: 75,
-                                    ),
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
-                                    TextBold(
-                                        text: 'Registered Succesfully!',
-                                        fontSize: 18,
-                                        color: Colors.black),
-                                    const SizedBox(
-                                      height: 50,
-                                    ),
-                                    ButtonWidget(
-                                        onPressed: () async {
-                                          Navigator.of(context).pushReplacement(
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const LoginPage()));
-                                        },
-                                        text: 'Continue'),
-                                  ],
-                                )),
-                          );
-                        });
-                  } catch (e) {
-                    showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (context) => AlertDialog(
-                              content: Text(
-                                e.toString(),
-                                style: const TextStyle(fontFamily: 'QRegular'),
-                              ),
-                              actions: <Widget>[
-                                FlatButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Text(
-                                    'Close',
-                                    style: TextStyle(
-                                        fontFamily: 'QRegular',
-                                        fontWeight: FontWeight.bold),
+            MaterialButton(
+              height: 50,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              minWidth: 250,
+              color: Colors.blue,
+              onPressed: () async {
+                try {
+                  await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                      email: email, password: password);
+                  addUser(name, contactNumber, email);
+                  showDialog(
+                      barrierDismissible: false,
+                      context: context,
+                      builder: (context) {
+                        return Dialog(
+                          child: SizedBox(
+                              height: 300,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(
+                                    Icons.check_circle_outline_outlined,
+                                    size: 75,
                                   ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  TextBold(
+                                      text: 'Registered Succesfully!',
+                                      fontSize: 18,
+                                      color: Colors.black),
+                                  const SizedBox(
+                                    height: 50,
+                                  ),
+                                  ButtonWidget(
+                                      onPressed: () async {
+                                        Navigator.of(context).pushReplacement(
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const LoginPage()));
+                                      },
+                                      text: 'Continue'),
+                                ],
+                              )),
+                        );
+                      });
+                } catch (e) {
+                  showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (context) => AlertDialog(
+                            content: Text(
+                              e.toString(),
+                              style: const TextStyle(fontFamily: 'QRegular'),
+                            ),
+                            actions: <Widget>[
+                              FlatButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text(
+                                  'Close',
+                                  style: TextStyle(
+                                      fontFamily: 'QRegular',
+                                      fontWeight: FontWeight.bold),
                                 ),
-                              ],
-                            ));
-                  }
-                },
-                text: 'Register'),
+                              ),
+                            ],
+                          ));
+                }
+              },
+              child:
+                  TextBold(text: 'Register', fontSize: 18, color: Colors.white),
+            ),
             const SizedBox(
               height: 50,
             ),

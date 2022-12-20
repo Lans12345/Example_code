@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:the_serve_new/auth/login_page.dart.dart';
 import 'package:the_serve_new/screens/home_screen.dart';
 
 void main() {
@@ -11,9 +12,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       title: 'The Serve',
-      home: HomeScreen(),
+      home: LoginPage(),
     );
   }
 }

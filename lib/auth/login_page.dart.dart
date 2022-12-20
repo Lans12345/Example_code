@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:the_serve_new/auth/signup_page.dart.dart';
 import 'package:the_serve_new/screens/home_screen.dart';
-import 'package:the_serve_new/widgets/button_widget.dart';
 import 'package:the_serve_new/widgets/text_widget.dart';
 
 class LoginPage extends StatefulWidget {
@@ -22,14 +21,14 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Colors.white,
       body: Center(
         child: SingleChildScrollView(
           child: Column(
             children: [
               Image.asset('assets/images/logo.png'),
               Padding(
-                padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
+                padding: const EdgeInsets.fromLTRB(30, 50, 30, 10),
                 child: TextFormField(
                   style: const TextStyle(
                       color: Colors.black, fontFamily: 'QRegular'),
@@ -45,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
                     filled: true,
                     enabledBorder: OutlineInputBorder(
                       borderSide:
-                          const BorderSide(width: 1, color: Colors.white),
+                          const BorderSide(width: 1, color: Colors.grey),
                       borderRadius: BorderRadius.circular(5),
                     ),
                     focusedBorder: OutlineInputBorder(
@@ -80,7 +79,7 @@ class _LoginPageState extends State<LoginPage> {
                     filled: true,
                     enabledBorder: OutlineInputBorder(
                       borderSide:
-                          const BorderSide(width: 1, color: Colors.white),
+                          const BorderSide(width: 1, color: Colors.grey),
                       borderRadius: BorderRadius.circular(5),
                     ),
                     focusedBorder: OutlineInputBorder(
@@ -98,58 +97,40 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               const SizedBox(
-                height: 50,
+                height: 30,
               ),
-              ButtonWidget(
-                  onPressed: () async {
-                    late var status;
-                    try {
-                      var collection = FirebaseFirestore.instance
-                          .collection('Users')
-                          .where('email', isEqualTo: email);
+              MaterialButton(
+                height: 50,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                minWidth: 250,
+                color: Colors.blue,
+                onPressed: () async {
+                  late var status;
+                  try {
+                    var collection = FirebaseFirestore.instance
+                        .collection('Users')
+                        .where('email', isEqualTo: email);
 
-                      var querySnapshot = await collection.get();
-                      await FirebaseAuth.instance.signInWithEmailAndPassword(
-                          email: email, password: password);
+                    var querySnapshot = await collection.get();
+                    await FirebaseAuth.instance.signInWithEmailAndPassword(
+                        email: email, password: password);
 
-                      setState(() {
-                        for (var queryDocumentSnapshot in querySnapshot.docs) {
-                          Map<String, dynamic> data =
-                              queryDocumentSnapshot.data();
-                          status = data['status'];
-                        }
-                      });
-
-                      if (status == 'Deleted') {
-                        showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                                  content: TextRegular(
-                                      text: "Your account has been deleted!",
-                                      color: Colors.black,
-                                      fontSize: 12),
-                                  actions: <Widget>[
-                                    FlatButton(
-                                      onPressed: () =>
-                                          Navigator.of(context).pop(true),
-                                      child: TextBold(
-                                          text: 'Close',
-                                          color: Colors.black,
-                                          fontSize: 12),
-                                    ),
-                                  ],
-                                ));
-                        await FirebaseAuth.instance.signOut();
-                      } else {
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (context) => HomeScreen()));
+                    setState(() {
+                      for (var queryDocumentSnapshot in querySnapshot.docs) {
+                        Map<String, dynamic> data =
+                            queryDocumentSnapshot.data();
+                        status = data['status'];
                       }
-                    } catch (e) {
+                    });
+
+                    if (status == 'Deleted') {
                       showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
                                 content: TextRegular(
-                                    text: "$e",
+                                    text: "Your account has been deleted!",
                                     color: Colors.black,
                                     fontSize: 12),
                                 actions: <Widget>[
@@ -163,9 +144,35 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
                                 ],
                               ));
+                      await FirebaseAuth.instance.signOut();
+                    } else {
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => HomeScreen()));
                     }
-                  },
-                  text: 'Login'),
+                  } catch (e) {
+                    showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                              content: TextRegular(
+                                  text: "$e",
+                                  color: Colors.black,
+                                  fontSize: 12),
+                              actions: <Widget>[
+                                FlatButton(
+                                  onPressed: () =>
+                                      Navigator.of(context).pop(true),
+                                  child: TextBold(
+                                      text: 'Close',
+                                      color: Colors.black,
+                                      fontSize: 12),
+                                ),
+                              ],
+                            ));
+                  }
+                },
+                child:
+                    TextBold(text: 'Login', fontSize: 18, color: Colors.white),
+              ),
               const SizedBox(
                 height: 30,
               ),
