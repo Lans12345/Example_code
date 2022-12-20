@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:the_serve_new/widgets/text_widget.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({Key? key}) : super(key: key);
@@ -25,20 +27,109 @@ class MapScreenState extends State<MapScreen> {
       tilt: 59.440717697143555,
       zoom: 19.151926040649414);
 
+  final box = GetStorage();
+
+  int _currentIndex = 0;
+
+  final tabs = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GoogleMap(
-        mapType: MapType.normal,
-        initialCameraPosition: _kGooglePlex,
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        },
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        title: TextRegular(
+            text: box.read('service'), fontSize: 18, color: Colors.white),
+        centerTitle: true,
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _goToTheLake,
-        label: const Text('To the lake!'),
-        icon: const Icon(Icons.directions_boat),
+      body: Column(
+        children: [
+          Expanded(
+            child: GoogleMap(
+              mapType: MapType.normal,
+              initialCameraPosition: _kGooglePlex,
+              onMapCreated: (GoogleMapController controller) {
+                _controller.complete(controller);
+              },
+            ),
+          ),
+          Container(
+            color: Colors.white30,
+            height: 100,
+            width: double.infinity,
+            child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemBuilder: ((context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: GestureDetector(
+                      onTap: () {},
+                      child: Card(
+                        elevation: 3,
+                        child: Container(
+                          width: 180,
+                          height: 50,
+                          color: Colors.white,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              ListTile(
+                                leading: const CircleAvatar(
+                                  minRadius: 18,
+                                  maxRadius: 18,
+                                  backgroundColor: Colors.grey,
+                                ),
+                                title: TextBold(
+                                    text: 'Name of Shop',
+                                    fontSize: 14,
+                                    color: Colors.black),
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              TextBold(
+                                  text: '100kms away, 1.71mins',
+                                  fontSize: 12,
+                                  color: Colors.black),
+                              const SizedBox(
+                                height: 8,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                })),
+          ),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        unselectedItemColor: Colors.grey,
+        type: BottomNavigationBarType.shifting,
+        iconSize: 25,
+        currentIndex: _currentIndex,
+        items: [
+          BottomNavigationBarItem(
+              icon: const Icon(
+                Icons.map,
+                color: Colors.white,
+              ),
+              backgroundColor: Colors.blue,
+              label: '${box.read('service')} Maps'),
+          BottomNavigationBarItem(
+              icon: const Icon(
+                Icons.drive_eta_rounded,
+                color: Colors.white,
+              ),
+              backgroundColor: Colors.blue,
+              label: '${box.read('service')} Table'),
+        ],
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
       ),
     );
   }
