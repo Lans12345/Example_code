@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:the_serve_new/screens/map/map_tab.dart';
 import 'package:the_serve_new/widgets/text_widget.dart';
 
 class MapScreen extends StatefulWidget {
@@ -31,11 +32,14 @@ class MapScreenState extends State<MapScreen> {
 
   int _currentIndex = 0;
 
-  final tabs = [];
+  final tabs = [MapTab()];
+
+  final cntrlr = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[200],
       appBar: AppBar(
         backgroundColor: Colors.blue,
         title: TextRegular(
@@ -44,86 +48,83 @@ class MapScreenState extends State<MapScreen> {
       ),
       body: Column(
         children: [
-          Expanded(
-            child: GoogleMap(
-              mapType: MapType.normal,
-              initialCameraPosition: _kGooglePlex,
-              onMapCreated: (GoogleMapController controller) {
-                _controller.complete(controller);
-              },
+          const SizedBox(
+            height: 10,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 10, right: 10),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                border: Border.all(color: Colors.black),
+              ),
+              width: double.infinity,
+              height: 50,
+              child: TextFormField(
+                controller: cntrlr,
+                decoration: const InputDecoration(
+                  hintText: 'Search a station',
+                  prefixIcon: Icon(
+                    Icons.search,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
             ),
           ),
-          Container(
-            color: Colors.white30,
-            height: 100,
-            width: double.infinity,
-            child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemBuilder: ((context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: GestureDetector(
-                      onTap: () {},
-                      child: Card(
-                        elevation: 3,
-                        child: Container(
-                          width: 180,
-                          height: 50,
-                          color: Colors.white,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              ListTile(
-                                leading: const CircleAvatar(
-                                  minRadius: 18,
-                                  maxRadius: 18,
-                                  backgroundColor: Colors.grey,
-                                ),
-                                title: TextBold(
-                                    text: 'Name of Shop',
-                                    fontSize: 14,
-                                    color: Colors.black),
-                              ),
-                              const SizedBox(
-                                height: 5,
-                              ),
-                              TextBold(
-                                  text: '100kms away, 1.71mins',
-                                  fontSize: 12,
-                                  color: Colors.black),
-                              const SizedBox(
-                                height: 8,
-                              ),
-                            ],
-                          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Expanded(
+            child: SizedBox(
+              child: ListView.builder(itemBuilder: ((context, index) {
+                return Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ListTile(
+                        leading: Container(
+                          color: Colors.black,
+                          height: 80,
+                          width: 100,
                         ),
+                        title: TextBold(
+                            text: 'Station Name',
+                            fontSize: 14,
+                            color: Colors.black),
+                        trailing: TextRegular(
+                            text: '100km', fontSize: 12, color: Colors.grey),
                       ),
                     ),
-                  );
-                })),
-          ),
+                  ),
+                );
+              })),
+            ),
+          )
         ],
       ),
+      // body: SafeArea(child: tabs[_currentIndex]),
       bottomNavigationBar: BottomNavigationBar(
         unselectedItemColor: Colors.grey,
         type: BottomNavigationBarType.shifting,
         iconSize: 25,
         currentIndex: _currentIndex,
-        items: [
+        items: const [
           BottomNavigationBarItem(
-              icon: const Icon(
+              icon: Icon(
                 Icons.map,
                 color: Colors.white,
               ),
               backgroundColor: Colors.blue,
-              label: '${box.read('service')} Maps'),
+              label: 'Maps'),
           BottomNavigationBarItem(
-              icon: const Icon(
+              icon: Icon(
                 Icons.drive_eta_rounded,
                 color: Colors.white,
               ),
               backgroundColor: Colors.blue,
-              label: '${box.read('service')} Table'),
+              label: 'Table'),
         ],
         onTap: (index) {
           setState(() {
