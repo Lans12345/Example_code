@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:the_serve_new/screens/map/map_tab.dart';
+import 'package:the_serve_new/screens/map/station_tab.dart';
 import 'package:the_serve_new/widgets/text_widget.dart';
 
 class MapScreen extends StatefulWidget {
@@ -32,7 +33,7 @@ class MapScreenState extends State<MapScreen> {
 
   int _currentIndex = 0;
 
-  final tabs = [MapTab()];
+  final tabs = [MapTab(), StationTab()];
 
   final cntrlr = TextEditingController();
 
@@ -46,65 +47,7 @@ class MapScreenState extends State<MapScreen> {
             text: box.read('service'), fontSize: 18, color: Colors.white),
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          const SizedBox(
-            height: 10,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5),
-                border: Border.all(color: Colors.black),
-              ),
-              width: double.infinity,
-              height: 50,
-              child: TextFormField(
-                controller: cntrlr,
-                decoration: const InputDecoration(
-                  hintText: 'Search a station',
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Expanded(
-            child: SizedBox(
-              child: ListView.builder(itemBuilder: ((context, index) {
-                return Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ListTile(
-                        leading: Container(
-                          color: Colors.black,
-                          height: 80,
-                          width: 100,
-                        ),
-                        title: TextBold(
-                            text: 'Station Name',
-                            fontSize: 14,
-                            color: Colors.black),
-                        trailing: TextRegular(
-                            text: '100km', fontSize: 12, color: Colors.grey),
-                      ),
-                    ),
-                  ),
-                );
-              })),
-            ),
-          )
-        ],
-      ),
-      // body: SafeArea(child: tabs[_currentIndex]),
+      body: SafeArea(child: tabs[_currentIndex]),
       bottomNavigationBar: BottomNavigationBar(
         unselectedItemColor: Colors.grey,
         type: BottomNavigationBarType.shifting,
