@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:the_serve_new/screens/map/station_page.dart';
 
 import '../../widgets/text_widget.dart';
 
@@ -46,8 +47,8 @@ class StationTab extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: ListTile(
                       onTap: () {
-                        //                         Navigator.of(context).push(MaterialPageRoute(
-                        // builder: (context) => const NameOfPage()));
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => StationPage()));
                       },
                       leading: Container(
                         color: Colors.black,
