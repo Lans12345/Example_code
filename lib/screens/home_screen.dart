@@ -25,10 +25,12 @@ class HomeScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ServiceContainer(
+                    onTap: () {},
                     label: 'Laundry Shops',
                     color: Colors.pinkAccent[700]!,
                     icon: Icons.local_laundry_service),
                 ServiceContainer(
+                    onTap: () {},
                     label: 'Water Refilling\n      Stations',
                     color: Colors.blue[700]!,
                     icon: Icons.water_damage_rounded),
@@ -41,10 +43,12 @@ class HomeScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ServiceContainer(
+                    onTap: () {},
                     label: 'Barber Shop\n      Salons',
                     color: Colors.red[700]!,
                     icon: Icons.cut_rounded),
                 ServiceContainer(
+                    onTap: () {},
                     label: 'Auto-Repair\n      Shops',
                     color: Colors.green[700]!,
                     icon: Icons.home_repair_service),
@@ -57,10 +61,12 @@ class HomeScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ServiceContainer(
+                    onTap: () {},
                     label: 'Gasoline Stations',
                     color: Colors.orange[700]!,
                     icon: Icons.local_gas_station_rounded),
                 ServiceContainer(
+                    onTap: () {},
                     label: 'Print, Xerox,\nLaminate\nServices',
                     color: Colors.yellow[700]!,
                     icon: Icons.print),

@@ -6,29 +6,37 @@ class ServiceContainer extends StatelessWidget {
   late Color color;
   late IconData icon;
 
+  late VoidCallback onTap;
+
   ServiceContainer(
-      {required this.label, required this.color, required this.icon});
+      {required this.label,
+      required this.color,
+      required this.icon,
+      required this.onTap});
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 180,
-      width: 170,
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            icon,
-            color: Colors.white,
-            size: 42,
-          ),
-          const SizedBox(height: 10),
-          TextBold(text: label, fontSize: 18, color: Colors.white),
-        ],
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 180,
+        width: 170,
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              color: Colors.white,
+              size: 42,
+            ),
+            const SizedBox(height: 10),
+            TextBold(text: label, fontSize: 18, color: Colors.white),
+          ],
+        ),
       ),
     );
   }
