@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:the_serve_new/widgets/button_widget.dart';
 import 'package:the_serve_new/widgets/text_widget.dart';
@@ -7,6 +8,17 @@ class StationPage extends StatelessWidget {
   final box = GetStorage();
 
   final commentController = TextEditingController();
+
+  showToast() {
+    Fluttertoast.showToast(
+        msg: "Comment sent succesfully!",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.blue,
+        textColor: Colors.white,
+        fontSize: 16.0);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +69,7 @@ class StationPage extends StatelessWidget {
             ),
             ButtonWidget(
                 onPressed: () {
+                  showToast();
                   commentController.clear();
                 },
                 text: 'Send'),
