@@ -180,7 +180,7 @@ class _LoginPageState extends State<LoginPage> {
                       builder: (context) => const ProviderLogin()));
                 },
                 child: TextBold(
-                    text: 'Continue as Provider',
+                    text: 'Continue as Service Provider',
                     fontSize: 14,
                     color: Colors.blue),
               ),

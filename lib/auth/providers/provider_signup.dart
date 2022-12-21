@@ -1,9 +1,15 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:the_serve_new/auth/providers/provider_login.dart';
-import 'package:the_serve_new/services/cloud_function/add_user.dart';
+import 'package:the_serve_new/services/cloud_function/add_comp.dart';
 import 'package:the_serve_new/widgets/button_widget.dart';
 import 'package:the_serve_new/widgets/text_widget.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as path;
 
 class ProviderSignup extends StatefulWidget {
   const ProviderSignup({Key? key}) : super(key: key);
@@ -23,13 +29,82 @@ class _ProviderSignupState extends State<ProviderSignup> {
 
   late String password;
 
-  var dropDownValue = 1;
+  late String url;
 
-  var dropDownValue1 = 1;
+  var hasLoaded = false;
 
-  var productCategory = 'First Year';
+  firebase_storage.FirebaseStorage storage =
+      firebase_storage.FirebaseStorage.instance;
 
-  var course = 'IT';
+  late String fileName = '';
+
+  late File imageFile;
+
+  late String imageURL = '';
+
+  Future<void> uploadPicture(String inputSource) async {
+    final picker = ImagePicker();
+    XFile pickedImage;
+    try {
+      pickedImage = (await picker.pickImage(
+          source: inputSource == 'camera'
+              ? ImageSource.camera
+              : ImageSource.gallery,
+          maxWidth: 1920))!;
+
+      fileName = path.basename(pickedImage.path);
+      imageFile = File(pickedImage.path);
+
+      try {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) => Padding(
+            padding: const EdgeInsets.only(left: 30, right: 30),
+            child: AlertDialog(
+                title: Row(
+              children: const [
+                CircularProgressIndicator(
+                  color: Colors.black,
+                ),
+                SizedBox(
+                  width: 20,
+                ),
+                Text(
+                  'Loading . . .',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'QRegular'),
+                ),
+              ],
+            )),
+          ),
+        );
+
+        await firebase_storage.FirebaseStorage.instance
+            .ref('Logo/$fileName')
+            .putFile(imageFile);
+        imageURL = await firebase_storage.FirebaseStorage.instance
+            .ref('Logo/$fileName')
+            .getDownloadURL();
+
+        setState(() {
+          hasLoaded = true;
+        });
+
+        Navigator.of(context).pop();
+      } on firebase_storage.FirebaseException catch (error) {
+        if (kDebugMode) {
+          print(error);
+        }
+      }
+    } catch (err) {
+      if (kDebugMode) {
+        print(err);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,15 +116,38 @@ class _ProviderSignupState extends State<ProviderSignup> {
             const SizedBox(
               height: 50,
             ),
-            Image.asset(
-              'assets/images/signup.gif',
-              height: 180,
+            hasLoaded
+                ? CircleAvatar(
+                    backgroundColor: Colors.grey,
+                    minRadius: 50,
+                    maxRadius: 50,
+                    backgroundImage: NetworkImage(imageURL),
+                  )
+                : GestureDetector(
+                    onTap: () {
+                      uploadPicture('gallery');
+                    },
+                    child: const CircleAvatar(
+                      backgroundColor: Colors.grey,
+                      minRadius: 50,
+                      maxRadius: 50,
+                      child: Icon(
+                        Icons.camera_alt_outlined,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+            const SizedBox(
+              height: 5,
             ),
+            TextRegular(text: 'Company Logo', fontSize: 12, color: Colors.grey),
+            // Image.asset(
+            //   'assets/images/signup.gif',
+            //   height: 180,
+            // ),
             const SizedBox(height: 20),
             TextBold(
-                text: 'Personal Information',
-                fontSize: 18,
-                color: Colors.black),
+                text: 'Company Information', fontSize: 18, color: Colors.black),
             const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
@@ -74,7 +172,7 @@ class _ProviderSignupState extends State<ProviderSignup> {
                     borderSide: const BorderSide(width: 1, color: Colors.black),
                     borderRadius: BorderRadius.circular(5),
                   ),
-                  labelText: 'Name',
+                  labelText: 'Company Name',
                   labelStyle: const TextStyle(
                     fontFamily: 'QRegular',
                     color: Colors.black,
@@ -108,7 +206,39 @@ class _ProviderSignupState extends State<ProviderSignup> {
                     borderSide: const BorderSide(width: 1, color: Colors.black),
                     borderRadius: BorderRadius.circular(5),
                   ),
-                  labelText: 'Contact Number',
+                  labelText: 'Company Contact Number',
+                  labelStyle: const TextStyle(
+                    fontFamily: 'QRegular',
+                    color: Colors.black,
+                    fontSize: 12.0,
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
+              child: TextFormField(
+                style: const TextStyle(
+                    color: Colors.black, fontFamily: 'QRegular'),
+                onChanged: (input) {
+                  url = input;
+                },
+                decoration: InputDecoration(
+                  suffixIcon: const Icon(
+                    Icons.web,
+                    color: Colors.black,
+                  ),
+                  fillColor: Colors.grey[200],
+                  filled: true,
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(width: 1, color: Colors.white),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(width: 1, color: Colors.black),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  labelText: 'Company Website',
                   labelStyle: const TextStyle(
                     fontFamily: 'QRegular',
                     color: Colors.black,
@@ -192,7 +322,7 @@ class _ProviderSignupState extends State<ProviderSignup> {
                 try {
                   await FirebaseAuth.instance.createUserWithEmailAndPassword(
                       email: email, password: password);
-                  addUser(name, contactNumber, email);
+                  addComp(name, contactNumber, email, url, imageURL);
                   showDialog(
                       barrierDismissible: false,
                       context: context,

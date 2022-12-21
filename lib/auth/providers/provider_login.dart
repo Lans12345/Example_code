@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:the_serve_new/auth/signup_page.dart.dart';
+import 'package:the_serve_new/auth/providers/provider_signup.dart';
 import 'package:the_serve_new/screens/home_screen.dart';
 import 'package:the_serve_new/widgets/text_widget.dart';
 
@@ -188,7 +188,7 @@ class _ProviderLoginState extends State<ProviderLogin> {
                   TextButton(
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const SignupPage()));
+                          builder: (context) => const ProviderSignup()));
                     },
                     child: TextBold(
                         text: "Register now",
