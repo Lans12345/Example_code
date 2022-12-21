@@ -2,19 +2,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:the_serve_new/auth/providers/provider_login.dart';
 import 'package:the_serve_new/auth/signup_page.dart.dart';
 import 'package:the_serve_new/screens/home_screen.dart';
 import 'package:the_serve_new/widgets/text_widget.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+class ProviderLogin extends StatefulWidget {
+  const ProviderLogin({Key? key}) : super(key: key);
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<ProviderLogin> createState() => _ProviderLoginState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _ProviderLoginState extends State<ProviderLogin> {
   late String email;
 
   late String password;
@@ -171,18 +170,10 @@ class _LoginPageState extends State<LoginPage> {
                             ));
                   }
                 },
-                child:
-                    TextBold(text: 'Login', fontSize: 18, color: Colors.white),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const ProviderLogin()));
-                },
                 child: TextBold(
-                    text: 'Continue as Provider',
-                    fontSize: 14,
-                    color: Colors.blue),
+                    text: 'Login as Provider',
+                    fontSize: 18,
+                    color: Colors.white),
               ),
               const SizedBox(
                 height: 30,
