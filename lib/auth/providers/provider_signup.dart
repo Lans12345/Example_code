@@ -89,7 +89,7 @@ class _ProviderSignupState extends State<ProviderSignup> {
   late String imageURL = '';
   var course = 'Laundry Shops';
 
-  var dropDownValue1 = 1;
+  var dropDownValue1 = 0;
 
   Future<void> uploadPicture(String inputSource) async {
     final picker = ImagePicker();
@@ -155,8 +155,8 @@ class _ProviderSignupState extends State<ProviderSignup> {
     }
   }
 
-  late double lat = 0;
-  late double long = 0;
+  late double lat;
+  late double long;
 
   getLocation() async {
     Position position = await Geolocator.getCurrentPosition(
@@ -492,6 +492,7 @@ class _ProviderSignupState extends State<ProviderSignup> {
               minWidth: 250,
               color: Colors.blue,
               onPressed: () async {
+                print(lat);
                 LocationPermission permission;
                 permission = await Geolocator.requestPermission();
 
