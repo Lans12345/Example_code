@@ -1,9 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:the_serve_new/auth/providers/provider_signup.dart';
-import 'package:the_serve_new/screens/home_screen.dart';
+import 'package:the_serve_new/screens/providers/provider_home.dart';
 import 'package:the_serve_new/widgets/text_widget.dart';
 
 class ProviderLogin extends StatefulWidget {
@@ -109,46 +107,11 @@ class _ProviderLoginState extends State<ProviderLogin> {
                 onPressed: () async {
                   late var status;
                   try {
-                    var collection = FirebaseFirestore.instance
-                        .collection('Users')
-                        .where('email', isEqualTo: email);
-
-                    var querySnapshot = await collection.get();
                     await FirebaseAuth.instance.signInWithEmailAndPassword(
                         email: email, password: password);
 
-                    setState(() {
-                      for (var queryDocumentSnapshot in querySnapshot.docs) {
-                        Map<String, dynamic> data =
-                            queryDocumentSnapshot.data();
-                        status = data['status'];
-                      }
-                    });
-
-                    if (status == 'Deleted') {
-                      showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                                content: TextRegular(
-                                    text: "Your account has been deleted!",
-                                    color: Colors.black,
-                                    fontSize: 12),
-                                actions: <Widget>[
-                                  FlatButton(
-                                    onPressed: () =>
-                                        Navigator.of(context).pop(true),
-                                    child: TextBold(
-                                        text: 'Close',
-                                        color: Colors.black,
-                                        fontSize: 12),
-                                  ),
-                                ],
-                              ));
-                      await FirebaseAuth.instance.signOut();
-                    } else {
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (context) => HomeScreen()));
-                    }
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (context) => ProviderHome()));
                   } catch (e) {
                     showDialog(
                         context: context,

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:the_serve_new/auth/providers/provider_login.dart';
 import 'package:the_serve_new/services/cloud_function/add_comp.dart';
 import 'package:the_serve_new/widgets/button_widget.dart';
@@ -19,6 +20,51 @@ class ProviderSignup extends StatefulWidget {
 }
 
 class _ProviderSignupState extends State<ProviderSignup> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getLocation();
+    determinePosition();
+  }
+
+  Future<Position> determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied, next time you could try
+        // requesting permissions again (this is also where
+        // Android's shouldShowRequestPermissionRationale
+        // returned true. According to Android guidelines
+        // your App should show an explanatory UI now.
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+    return await Geolocator.getCurrentPosition();
+  }
+
   late String name;
 
   late String contactNumber;
@@ -41,6 +87,9 @@ class _ProviderSignupState extends State<ProviderSignup> {
   late File imageFile;
 
   late String imageURL = '';
+  var course = 'Laundry Shops';
+
+  var dropDownValue1 = 1;
 
   Future<void> uploadPicture(String inputSource) async {
     final picker = ImagePicker();
@@ -106,6 +155,19 @@ class _ProviderSignupState extends State<ProviderSignup> {
     }
   }
 
+  late double lat = 0;
+  late double long = 0;
+
+  getLocation() async {
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+
+    setState(() {
+      lat = position.latitude;
+      long = position.longitude;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -140,7 +202,8 @@ class _ProviderSignupState extends State<ProviderSignup> {
             const SizedBox(
               height: 5,
             ),
-            TextRegular(text: 'Company Logo', fontSize: 12, color: Colors.grey),
+            TextRegular(
+                text: 'Picture of Station', fontSize: 12, color: Colors.grey),
             // Image.asset(
             //   'assets/images/signup.gif',
             //   height: 180,
@@ -247,6 +310,116 @@ class _ProviderSignupState extends State<ProviderSignup> {
                 ),
               ),
             ),
+            TextRegular(text: 'Sector', fontSize: 12, color: Colors.black),
+            Padding(
+              padding: const EdgeInsets.only(left: 30, right: 30, top: 10),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 2, 20, 2),
+                  child: DropdownButton(
+                    underline: Container(color: Colors.transparent),
+                    iconEnabledColor: Colors.black,
+                    isExpanded: true,
+                    value: dropDownValue1,
+                    items: [
+                      DropdownMenuItem(
+                        onTap: () {
+                          course = "Laundry Shops";
+                        },
+                        value: 0,
+                        child: Center(
+                            child: Row(children: const [
+                          Text("Laundry Shops",
+                              style: TextStyle(
+                                fontFamily: 'QRegular',
+                                color: Colors.black,
+                              ))
+                        ])),
+                      ),
+                      DropdownMenuItem(
+                        onTap: () {
+                          course = "Water Refilling Stations";
+                        },
+                        value: 1,
+                        child: Center(
+                            child: Row(children: const [
+                          Text("Water Refilling Stations",
+                              style: TextStyle(
+                                fontFamily: 'QRegular',
+                                color: Colors.black,
+                              ))
+                        ])),
+                      ),
+                      DropdownMenuItem(
+                        onTap: () {
+                          course = "Barber Shops and Salons";
+                        },
+                        value: 2,
+                        child: Center(
+                            child: Row(children: const [
+                          Text("Barber Shops and Salons",
+                              style: TextStyle(
+                                fontFamily: 'QRegular',
+                                color: Colors.black,
+                              ))
+                        ])),
+                      ),
+                      DropdownMenuItem(
+                        onTap: () {
+                          course = "Auto-Repair Shops";
+                        },
+                        value: 3,
+                        child: Center(
+                            child: Row(children: const [
+                          Text("Auto-Repair Shops",
+                              style: TextStyle(
+                                fontFamily: 'QRegular',
+                                color: Colors.black,
+                              ))
+                        ])),
+                      ),
+                      DropdownMenuItem(
+                        onTap: () {
+                          course = "Gasoline Stations";
+                        },
+                        value: 4,
+                        child: Center(
+                            child: Row(children: const [
+                          Text("Gasoline Stations",
+                              style: TextStyle(
+                                fontFamily: 'QRegular',
+                                color: Colors.black,
+                              ))
+                        ])),
+                      ),
+                      DropdownMenuItem(
+                        onTap: () {
+                          course = "Print, Xerox, Laminate Services";
+                        },
+                        value: 5,
+                        child: Center(
+                            child: Row(children: const [
+                          Text("Print, Xerox, Laminate Services",
+                              style: TextStyle(
+                                fontFamily: 'QRegular',
+                                color: Colors.black,
+                              ))
+                        ])),
+                      ),
+                    ],
+                    onChanged: (value) {
+                      setState(() {
+                        dropDownValue1 = int.parse(value.toString());
+                      });
+                    },
+                  ),
+                ),
+              ),
+            ),
             const SizedBox(height: 20),
             TextBold(
                 text: 'Login Credentials', fontSize: 18, color: Colors.black),
@@ -319,54 +492,91 @@ class _ProviderSignupState extends State<ProviderSignup> {
               minWidth: 250,
               color: Colors.blue,
               onPressed: () async {
-                try {
-                  await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                      email: email, password: password);
-                  addComp(name, contactNumber, email, url, imageURL);
-                  showDialog(
-                      barrierDismissible: false,
-                      context: context,
-                      builder: (context) {
-                        return Dialog(
-                          child: SizedBox(
-                              height: 300,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Icon(
-                                    Icons.check_circle_outline_outlined,
-                                    size: 75,
+                LocationPermission permission;
+                permission = await Geolocator.requestPermission();
+
+                bool serviceEnabled;
+
+                // Test if location services are enabled.
+                serviceEnabled = await Geolocator.isLocationServiceEnabled();
+
+                permission = await Geolocator.requestPermission();
+
+                if (serviceEnabled == true) {
+                  try {
+                    await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                        email: email, password: password);
+                    addComp(name, contactNumber, email, url, imageURL, lat,
+                        long, course);
+                    showDialog(
+                        barrierDismissible: false,
+                        context: context,
+                        builder: (context) {
+                          return Dialog(
+                            child: SizedBox(
+                                height: 300,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(
+                                      Icons.check_circle_outline_outlined,
+                                      size: 75,
+                                    ),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    TextBold(
+                                        text: 'Registered Succesfully!',
+                                        fontSize: 18,
+                                        color: Colors.black),
+                                    const SizedBox(
+                                      height: 50,
+                                    ),
+                                    ButtonWidget(
+                                        onPressed: () async {
+                                          Navigator.of(context).pushReplacement(
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const ProviderLogin()));
+                                        },
+                                        text: 'Continue'),
+                                  ],
+                                )),
+                          );
+                        });
+                  } catch (e) {
+                    showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (context) => AlertDialog(
+                              content: Text(
+                                e.toString(),
+                                style: const TextStyle(fontFamily: 'QRegular'),
+                              ),
+                              actions: <Widget>[
+                                FlatButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text(
+                                    'Close',
+                                    style: TextStyle(
+                                        fontFamily: 'QRegular',
+                                        fontWeight: FontWeight.bold),
                                   ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  TextBold(
-                                      text: 'Registered Succesfully!',
-                                      fontSize: 18,
-                                      color: Colors.black),
-                                  const SizedBox(
-                                    height: 50,
-                                  ),
-                                  ButtonWidget(
-                                      onPressed: () async {
-                                        Navigator.of(context).pushReplacement(
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const ProviderLogin()));
-                                      },
-                                      text: 'Continue'),
-                                ],
-                              )),
-                        );
-                      });
-                } catch (e) {
+                                ),
+                              ],
+                            ));
+                    await Geolocator.requestPermission();
+                  }
+                } else {
                   showDialog(
                       context: context,
                       barrierDismissible: false,
                       builder: (context) => AlertDialog(
-                            content: Text(
-                              e.toString(),
-                              style: const TextStyle(fontFamily: 'QRegular'),
+                            content: const Text(
+                              'Cannot Proceed. Location is off',
+                              style: TextStyle(fontFamily: 'QRegular'),
                             ),
                             actions: <Widget>[
                               FlatButton(
