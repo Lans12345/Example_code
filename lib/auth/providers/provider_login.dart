@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:the_serve_new/auth/login_page.dart.dart';
 import 'package:the_serve_new/auth/providers/provider_signup.dart';
 import 'package:the_serve_new/screens/providers/provider_home.dart';
 import 'package:the_serve_new/widgets/text_widget.dart';
@@ -137,6 +138,17 @@ class _ProviderLoginState extends State<ProviderLogin> {
                     text: 'Login as Provider',
                     fontSize: 18,
                     color: Colors.white),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => const LoginPage()));
+                },
+                child: TextBold(
+                    text: 'Back to login', fontSize: 14, color: Colors.blue),
               ),
               const SizedBox(
                 height: 30,
