@@ -82,28 +82,34 @@ class ProviderHome extends StatelessWidget {
                   Navigator.of(context).push(
                       MaterialPageRoute(builder: (context) => AddProduct()));
                 }),
-            body: ListView.builder(itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                child: ListTile(
-                  tileColor: Colors.white,
-                  title: TextBold(
-                      text: 'Product Name', fontSize: 14, color: Colors.black),
-                  trailing: IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.delete,
-                      color: Colors.red,
-                    ),
-                  ),
-                  leading: const CircleAvatar(
-                    minRadius: 25,
-                    maxRadius: 25,
-                    backgroundColor: Colors.grey,
-                  ),
-                ),
-              );
-            }),
+            body: StreamBuilder<Object>(
+                stream: null,
+                builder: (context, snapshot) {
+                  return ListView.builder(itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                      child: ListTile(
+                        tileColor: Colors.white,
+                        title: TextBold(
+                            text: 'Product Name',
+                            fontSize: 14,
+                            color: Colors.black),
+                        trailing: IconButton(
+                          onPressed: () {},
+                          icon: const Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                          ),
+                        ),
+                        leading: const CircleAvatar(
+                          minRadius: 25,
+                          maxRadius: 25,
+                          backgroundColor: Colors.grey,
+                        ),
+                      ),
+                    );
+                  });
+                }),
           ),
           ListView.builder(itemBuilder: ((context, index) {
             return Padding(
