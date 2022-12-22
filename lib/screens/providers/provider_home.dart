@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:the_serve_new/auth/providers/provider_login.dart';
+import 'package:the_serve_new/screens/providers/add_product_provider.dart';
 import 'package:the_serve_new/widgets/text_widget.dart';
 
 class ProviderHome extends StatelessWidget {
@@ -76,7 +77,11 @@ class ProviderHome extends StatelessWidget {
         body: TabBarView(children: [
           Scaffold(
             floatingActionButton: FloatingActionButton(
-                child: const Icon(Icons.add), onPressed: () {}),
+                child: const Icon(Icons.add),
+                onPressed: () {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => AddProduct()));
+                }),
             body: ListView.builder(itemBuilder: (context, index) {
               return Padding(
                 padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
