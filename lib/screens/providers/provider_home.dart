@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:the_serve_new/auth/providers/provider_login.dart';
@@ -82,47 +83,112 @@ class ProviderHome extends StatelessWidget {
                   Navigator.of(context).push(
                       MaterialPageRoute(builder: (context) => AddProduct()));
                 }),
-            body: StreamBuilder<Object>(
-                stream: null,
-                builder: (context, snapshot) {
-                  return ListView.builder(itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                      child: ListTile(
-                        tileColor: Colors.white,
-                        title: TextBold(
-                            text: 'Product Name',
-                            fontSize: 14,
-                            color: Colors.black),
-                        trailing: IconButton(
-                          onPressed: () {},
-                          icon: const Icon(
-                            Icons.delete,
-                            color: Colors.red,
-                          ),
-                        ),
-                        leading: const CircleAvatar(
-                          minRadius: 25,
-                          maxRadius: 25,
-                          backgroundColor: Colors.grey,
-                        ),
-                      ),
+            body: StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('Products')
+                    .where('uid',
+                        isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+                    .snapshots(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.hasError) {
+                    print('error');
+                    return const Center(child: Text('Error'));
+                  }
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    print('waiting');
+                    return const Padding(
+                      padding: EdgeInsets.only(top: 50),
+                      child: Center(
+                          child: CircularProgressIndicator(
+                        color: Colors.black,
+                      )),
                     );
-                  });
+                  }
+
+                  final data = snapshot.requireData;
+                  return ListView.builder(
+                      itemCount: snapshot.data?.size ?? 0,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                          child: ListTile(
+                            tileColor: Colors.white,
+                            title: TextBold(
+                                text: data.docs[index]['name'],
+                                fontSize: 14,
+                                color: Colors.black),
+                            subtitle: TextBold(
+                                text: data.docs[index]['desc'],
+                                fontSize: 12,
+                                color: Colors.grey),
+                            trailing: IconButton(
+                              onPressed: () {
+                                FirebaseFirestore.instance
+                                    .collection('Products')
+                                    .doc(data.docs[index].id)
+                                    .delete();
+                              },
+                              icon: const Icon(
+                                Icons.delete,
+                                color: Colors.red,
+                              ),
+                            ),
+                            leading: CircleAvatar(
+                              minRadius: 25,
+                              maxRadius: 25,
+                              backgroundImage:
+                                  NetworkImage(data.docs[index]['imageURL']),
+                              backgroundColor: Colors.transparent,
+                            ),
+                          ),
+                        );
+                      });
                 }),
           ),
-          ListView.builder(itemBuilder: ((context, index) {
-            return Padding(
-              padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-              child: ListTile(
-                tileColor: Colors.white,
-                title: TextRegular(
-                    text: 'Content here', fontSize: 12, color: Colors.black),
-                subtitle: TextRegular(
-                    text: 'Name here', fontSize: 10, color: Colors.grey),
-              ),
-            );
-          }))
+          StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('Comments')
+                  .where('uid',
+                      isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+                  .snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  print('error');
+                  return const Center(child: Text('Error'));
+                }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  print('waiting');
+                  return const Padding(
+                    padding: EdgeInsets.only(top: 50),
+                    child: Center(
+                        child: CircularProgressIndicator(
+                      color: Colors.black,
+                    )),
+                  );
+                }
+
+                final data = snapshot.requireData;
+                return ListView.builder(
+                    itemCount: snapshot.data?.size ?? 0,
+                    itemBuilder: ((context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                        child: ListTile(
+                          tileColor: Colors.white,
+                          title: TextRegular(
+                              text: data.docs[index]['comment'],
+                              fontSize: 12,
+                              color: Colors.black),
+                          subtitle: TextRegular(
+                              text: data.docs[index]['name'],
+                              fontSize: 10,
+                              color: Colors.grey),
+                        ),
+                      );
+                    }));
+              })
         ]),
       ),
     );
