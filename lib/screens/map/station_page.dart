@@ -207,7 +207,12 @@ class _StationPageState extends State<StationPage> {
                                   ),
                                 ),
                                 GestureDetector(
-                                  onTap: () {},
+                                  onTap: () async {
+                                    final text = 'https:${data['url']}';
+                                    if (await canLaunch(text)) {
+                                      await launch(text);
+                                    }
+                                  },
                                   child: Container(
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10),
@@ -226,7 +231,12 @@ class _StationPageState extends State<StationPage> {
                                   ),
                                 ),
                                 GestureDetector(
-                                  onTap: () {},
+                                  onTap: () async {
+                                    final text = 'mailto:${data['email']}';
+                                    if (await canLaunch(text)) {
+                                      await launch(text);
+                                    }
+                                  },
                                   child: Container(
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10),
