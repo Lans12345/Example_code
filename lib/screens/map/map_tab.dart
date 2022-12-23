@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -51,6 +52,15 @@ class _MapTabState extends State<MapTab> {
   }
 
   final box = GetStorage();
+
+  double calculateDistance(lat1, lon1, lat2, lon2) {
+    var p = 0.017453292519943295;
+    var c = cos;
+    var a = 0.5 -
+        c((lat2 - lat1) * p) / 2 +
+        c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
+    return 12742 * asin(sqrt(a));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,13 +129,15 @@ class _MapTabState extends State<MapTab> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   ListTile(
-                                    leading: const CircleAvatar(
+                                    leading: CircleAvatar(
                                       minRadius: 18,
                                       maxRadius: 18,
+                                      backgroundImage: NetworkImage(
+                                          data.docs[index]['logo']),
                                       backgroundColor: Colors.grey,
                                     ),
                                     title: TextBold(
-                                        text: 'Name of Shop',
+                                        text: data.docs[index]['name'],
                                         fontSize: 14,
                                         color: Colors.black),
                                   ),
@@ -133,7 +145,8 @@ class _MapTabState extends State<MapTab> {
                                     height: 5,
                                   ),
                                   TextBold(
-                                      text: '100kms away, 1.71mins',
+                                      text:
+                                          '${calculateDistance(lat, long, data.docs[index]['lat'], data.docs[index]['lang']).toStringAsFixed(2)}kms away, ${(calculateDistance(lat, long, data.docs[index]['lat'], data.docs[index]['lang']) / 55).toStringAsFixed(2)}mins',
                                       fontSize: 12,
                                       color: Colors.black),
                                   const SizedBox(
