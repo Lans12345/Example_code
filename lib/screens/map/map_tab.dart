@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../widgets/text_widget.dart';
@@ -48,6 +50,8 @@ class _MapTabState extends State<MapTab> {
     });
   }
 
+  final box = GetStorage();
+
   @override
   Widget build(BuildContext context) {
     CameraPosition kGooglePlex = CameraPosition(
@@ -70,55 +74,80 @@ class _MapTabState extends State<MapTab> {
             : const Center(
                 child: CircularProgressIndicator(),
               ),
-        Container(
-          color: Colors.white30,
-          height: 100,
-          width: double.infinity,
-          child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemBuilder: ((context, index) {
-                return Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: GestureDetector(
-                    onTap: () {},
-                    child: Card(
-                      elevation: 3,
-                      child: Container(
-                        width: 180,
-                        height: 50,
-                        color: Colors.white,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            ListTile(
-                              leading: const CircleAvatar(
-                                minRadius: 18,
-                                maxRadius: 18,
-                                backgroundColor: Colors.grey,
-                              ),
-                              title: TextBold(
-                                  text: 'Name of Shop',
-                                  fontSize: 14,
-                                  color: Colors.black),
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            TextBold(
-                                text: '100kms away, 1.71mins',
-                                fontSize: 12,
-                                color: Colors.black),
-                            const SizedBox(
-                              height: 8,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
+        StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection('Providers')
+                .where('type', isEqualTo: box.read('service'))
+                .snapshots(),
+            builder:
+                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (snapshot.hasError) {
+                print('error');
+                return const Center(child: Text('Error'));
+              }
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                print('waiting');
+                return const Padding(
+                  padding: EdgeInsets.only(top: 50),
+                  child: Center(
+                      child: CircularProgressIndicator(
+                    color: Colors.black,
+                  )),
                 );
-              })),
-        ),
+              }
+
+              final data = snapshot.requireData;
+              return Container(
+                color: Colors.white30,
+                height: 100,
+                width: double.infinity,
+                child: ListView.builder(
+                    itemCount: snapshot.data?.size ?? 0,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: ((context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: GestureDetector(
+                          onTap: () {},
+                          child: Card(
+                            elevation: 3,
+                            child: Container(
+                              width: 180,
+                              height: 50,
+                              color: Colors.white,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  ListTile(
+                                    leading: const CircleAvatar(
+                                      minRadius: 18,
+                                      maxRadius: 18,
+                                      backgroundColor: Colors.grey,
+                                    ),
+                                    title: TextBold(
+                                        text: 'Name of Shop',
+                                        fontSize: 14,
+                                        color: Colors.black),
+                                  ),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  TextBold(
+                                      text: '100kms away, 1.71mins',
+                                      fontSize: 12,
+                                      color: Colors.black),
+                                  const SizedBox(
+                                    height: 8,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    })),
+              );
+            }),
       ],
     );
   }
