@@ -240,30 +240,56 @@ class _StationPageState extends State<StationPage> {
                       });
                 }),
           ),
-          StreamBuilder<Object>(
-              stream: null,
-              builder: (context, snapshot) {
+          StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('Products')
+                  .where('uid', isEqualTo: box.read('uid'))
+                  .snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  print('error');
+                  return const Center(child: Text('Error'));
+                }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  print('waiting');
+                  return const Padding(
+                    padding: EdgeInsets.only(top: 50),
+                    child: Center(
+                        child: CircularProgressIndicator(
+                      color: Colors.black,
+                    )),
+                  );
+                }
+
+                final data = snapshot.requireData;
                 return Padding(
                   padding: const EdgeInsets.only(top: 10),
-                  child: ListView.builder(itemBuilder: ((context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
-                      child: ListTile(
-                        title: TextBold(
-                            text: 'Product Name',
-                            fontSize: 14,
-                            color: Colors.black),
-                        trailing: TextBold(
-                            text: 'Price', fontSize: 12, color: Colors.grey),
-                        leading: const CircleAvatar(
-                          backgroundColor: Colors.grey,
-                          minRadius: 20,
-                          maxRadius: 20,
-                        ),
-                        tileColor: Colors.white,
-                      ),
-                    );
-                  })),
+                  child: ListView.builder(
+                      itemCount: snapshot.data?.size ?? 0,
+                      itemBuilder: ((context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
+                          child: ListTile(
+                            title: TextBold(
+                                text: data.docs[index]['name'],
+                                fontSize: 14,
+                                color: Colors.black),
+                            trailing: TextBold(
+                                text: data.docs[index]['price'],
+                                fontSize: 12,
+                                color: Colors.grey),
+                            leading: CircleAvatar(
+                              backgroundColor: Colors.grey,
+                              minRadius: 20,
+                              maxRadius: 20,
+                              backgroundImage:
+                                  NetworkImage(data.docs[index]['imageURL']),
+                            ),
+                            tileColor: Colors.white,
+                          ),
+                        );
+                      })),
                 );
               })
         ]),
