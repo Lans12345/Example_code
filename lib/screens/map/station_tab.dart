@@ -160,6 +160,7 @@ class _StationTabState extends State<StationTab> {
                               padding: const EdgeInsets.all(8.0),
                               child: ListTile(
                                 onTap: () {
+                                  box.write('uid', data.docs[index].id);
                                   Navigator.of(context).push(MaterialPageRoute(
                                       builder: (context) => StationPage()));
                                 },

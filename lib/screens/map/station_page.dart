@@ -1,10 +1,25 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:the_serve_new/services/cloud_function/add_comment.dart';
 import 'package:the_serve_new/widgets/button_widget.dart';
 import 'package:the_serve_new/widgets/text_widget.dart';
 
-class StationPage extends StatelessWidget {
+class StationPage extends StatefulWidget {
+  @override
+  State<StationPage> createState() => _StationPageState();
+}
+
+class _StationPageState extends State<StationPage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getData();
+  }
+
   final box = GetStorage();
 
   final commentController = TextEditingController();
@@ -20,8 +35,31 @@ class StationPage extends StatelessWidget {
         fontSize: 16.0);
   }
 
+  late String name = '';
+
+  getData() async {
+    // Use provider
+    var collection = FirebaseFirestore.instance
+        .collection('Users')
+        .where('id', isEqualTo: FirebaseAuth.instance.currentUser!.uid);
+
+    var querySnapshot = await collection.get();
+    if (mounted) {
+      setState(() {
+        for (var queryDocumentSnapshot in querySnapshot.docs) {
+          Map<String, dynamic> data = queryDocumentSnapshot.data();
+          name = data['name'];
+        }
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final Stream<DocumentSnapshot> userData = FirebaseFirestore.instance
+        .collection('Providers')
+        .doc(box.read('uid'))
+        .snapshots();
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -45,138 +83,161 @@ class StationPage extends StatelessWidget {
             child: StreamBuilder<Object>(
                 stream: null,
                 builder: (context, snapshot) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                        height: 200,
-                        width: 300,
-                        color: Colors.black,
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      TextBold(
-                          text: 'Station Name',
-                          fontSize: 18,
-                          color: Colors.black),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Container(
-                        margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(
-                            color: Colors.grey,
-                          ),
-                        ),
-                        child: TextFormField(
-                          maxLines: 5,
-                          controller: commentController,
-                          decoration: const InputDecoration(
-                            hintText: ' Leave a comment',
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      ButtonWidget(
-                          onPressed: () {
-                            showToast();
-                            commentController.clear();
-                          },
-                          text: 'Send'),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          GestureDetector(
-                            onTap: () {},
-                            child: Container(
+                  return StreamBuilder<DocumentSnapshot>(
+                      stream: userData,
+                      builder:
+                          (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+                        if (!snapshot.hasData) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        } else if (snapshot.hasError) {
+                          return const Center(
+                              child: Text('Something went wrong'));
+                        } else if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+
+                        dynamic data = snapshot.data;
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Container(
+                              height: 200,
+                              width: 300,
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
+                                  image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: NetworkImage(data['logo']))),
+                            ),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            TextBold(
+                                text: data['name'],
+                                fontSize: 18,
+                                color: Colors.black),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Container(
+                              margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
                                 border: Border.all(
-                                  color: Colors.blue,
-                                  width: 3,
+                                  color: Colors.grey,
                                 ),
                               ),
-                              height: 40,
-                              width: 75,
-                              child: Center(
-                                  child: TextBold(
-                                      text: 'MESSAGE',
-                                      fontSize: 14,
-                                      color: Colors.black)),
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {},
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                  color: Colors.blue,
-                                  width: 3,
+                              child: TextFormField(
+                                maxLines: 5,
+                                controller: commentController,
+                                decoration: const InputDecoration(
+                                  hintText: ' Leave a comment',
                                 ),
                               ),
-                              height: 40,
-                              width: 75,
-                              child: Center(
-                                  child: TextBold(
-                                      text: 'CALL',
-                                      fontSize: 14,
-                                      color: Colors.black)),
                             ),
-                          ),
-                          GestureDetector(
-                            onTap: () {},
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                  color: Colors.blue,
-                                  width: 3,
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            ButtonWidget(
+                                onPressed: () {
+                                  addComment(
+                                      name, commentController.text, data['id']);
+                                  showToast();
+                                  commentController.clear();
+                                },
+                                text: 'Send'),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {},
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                        color: Colors.blue,
+                                        width: 3,
+                                      ),
+                                    ),
+                                    height: 40,
+                                    width: 75,
+                                    child: Center(
+                                        child: TextBold(
+                                            text: 'MESSAGE',
+                                            fontSize: 14,
+                                            color: Colors.black)),
+                                  ),
                                 ),
-                              ),
-                              height: 40,
-                              width: 75,
-                              child: Center(
-                                  child: TextBold(
-                                      text: 'URL',
-                                      fontSize: 14,
-                                      color: Colors.black)),
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {},
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                  color: Colors.blue,
-                                  width: 3,
+                                GestureDetector(
+                                  onTap: () {},
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                        color: Colors.blue,
+                                        width: 3,
+                                      ),
+                                    ),
+                                    height: 40,
+                                    width: 75,
+                                    child: Center(
+                                        child: TextBold(
+                                            text: 'CALL',
+                                            fontSize: 14,
+                                            color: Colors.black)),
+                                  ),
                                 ),
-                              ),
-                              height: 40,
-                              width: 75,
-                              child: Center(
-                                  child: TextBold(
-                                      text: 'EMAIL',
-                                      fontSize: 14,
-                                      color: Colors.black)),
+                                GestureDetector(
+                                  onTap: () {},
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                        color: Colors.blue,
+                                        width: 3,
+                                      ),
+                                    ),
+                                    height: 40,
+                                    width: 75,
+                                    child: Center(
+                                        child: TextBold(
+                                            text: 'URL',
+                                            fontSize: 14,
+                                            color: Colors.black)),
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {},
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                        color: Colors.blue,
+                                        width: 3,
+                                      ),
+                                    ),
+                                    height: 40,
+                                    width: 75,
+                                    child: Center(
+                                        child: TextBold(
+                                            text: 'EMAIL',
+                                            fontSize: 14,
+                                            color: Colors.black)),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  );
+                          ],
+                        );
+                      });
                 }),
           ),
           StreamBuilder<Object>(
