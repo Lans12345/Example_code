@@ -27,6 +27,8 @@ class _MapTabState extends State<MapTab> {
     getLocation();
   }
 
+  GoogleMapController? mapController;
+
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
 
@@ -78,6 +80,7 @@ class _MapTabState extends State<MapTab> {
                   initialCameraPosition: kGooglePlex,
                   onMapCreated: (GoogleMapController controller) {
                     _controller.complete(controller);
+                    mapController = controller;
                   },
                 ),
               )
@@ -118,7 +121,13 @@ class _MapTabState extends State<MapTab> {
                       return Padding(
                         padding: const EdgeInsets.all(5.0),
                         child: GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            mapController?.animateCamera(
+                                CameraUpdate.newCameraPosition(CameraPosition(
+                                    target: LatLng(data.docs[index]['lat'],
+                                        data.docs[index]['lang']),
+                                    zoom: 16)));
+                          },
                           child: Card(
                             elevation: 3,
                             child: Container(
