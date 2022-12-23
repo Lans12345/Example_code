@@ -6,6 +6,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:the_serve_new/services/cloud_function/add_comment.dart';
 import 'package:the_serve_new/widgets/button_widget.dart';
 import 'package:the_serve_new/widgets/text_widget.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class StationPage extends StatefulWidget {
   @override
@@ -158,7 +159,12 @@ class _StationPageState extends State<StationPage> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 GestureDetector(
-                                  onTap: () {},
+                                  onTap: () async {
+                                    final text = 'sms:${data['contactNumber']}';
+                                    if (await canLaunch(text)) {
+                                      await launch(text);
+                                    }
+                                  },
                                   child: Container(
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10),
@@ -177,7 +183,12 @@ class _StationPageState extends State<StationPage> {
                                   ),
                                 ),
                                 GestureDetector(
-                                  onTap: () {},
+                                  onTap: () async {
+                                    final text = 'tel:${data['contactNumber']}';
+                                    if (await canLaunch(text)) {
+                                      await launch(text);
+                                    }
+                                  },
                                   child: Container(
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10),
