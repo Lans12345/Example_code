@@ -36,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
                   },
                   decoration: InputDecoration(
                     suffixIcon: const Icon(
-                      Icons.person,
+                      Icons.email,
                       color: Colors.black,
                     ),
                     fillColor: Colors.white,

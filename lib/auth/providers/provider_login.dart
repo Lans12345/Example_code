@@ -36,7 +36,7 @@ class _ProviderLoginState extends State<ProviderLogin> {
                   },
                   decoration: InputDecoration(
                     suffixIcon: const Icon(
-                      Icons.person,
+                      Icons.email,
                       color: Colors.black,
                     ),
                     fillColor: Colors.white,
@@ -148,7 +148,9 @@ class _ProviderLoginState extends State<ProviderLogin> {
                       builder: (context) => const LoginPage()));
                 },
                 child: TextBold(
-                    text: 'Back to login', fontSize: 14, color: Colors.blue),
+                    text: 'Continue as Customer',
+                    fontSize: 14,
+                    color: Colors.blue),
               ),
               const SizedBox(
                 height: 30,
