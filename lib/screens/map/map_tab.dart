@@ -176,6 +176,8 @@ class _MapTabState extends State<MapTab> {
                     itemCount: snapshot.data?.size ?? 0,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: ((context, index) {
+                      double rate = (data.docs[index]['ratings'] /
+                          data.docs[index]['nums']);
                       return Padding(
                         padding: const EdgeInsets.all(5.0),
                         child: GestureDetector(
@@ -201,6 +203,10 @@ class _MapTabState extends State<MapTab> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   ListTile(
+                                    subtitle: TextRegular(
+                                        text: rate.toStringAsFixed(2),
+                                        fontSize: 10,
+                                        color: Colors.amber),
                                     leading: CircleAvatar(
                                       minRadius: 18,
                                       maxRadius: 18,
@@ -213,17 +219,11 @@ class _MapTabState extends State<MapTab> {
                                         fontSize: 14,
                                         color: Colors.black),
                                   ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
                                   TextBold(
                                       text:
                                           '${calculateDistance(lat, long, data.docs[index]['lat'], data.docs[index]['lang']).toStringAsFixed(2)}kms away, ${(calculateDistance(lat, long, data.docs[index]['lat'], data.docs[index]['lang']) / 55).toStringAsFixed(2)}mins',
                                       fontSize: 12,
                                       color: Colors.black),
-                                  const SizedBox(
-                                    height: 8,
-                                  ),
                                 ],
                               ),
                             ),
