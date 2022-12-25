@@ -216,7 +216,7 @@ class _MapTabState extends State<MapTab> {
                                     ),
                                     title: TextBold(
                                         text: data.docs[index]['name'],
-                                        fontSize: 14,
+                                        fontSize: 16,
                                         color: Colors.black),
                                   ),
                                   TextBold(

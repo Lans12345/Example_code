@@ -148,17 +148,24 @@ class _StationTabState extends State<StationTab> {
               }
 
               final data = snapshot.requireData;
+
               return Expanded(
                 child: SizedBox(
                   child: ListView.builder(
                       itemCount: snapshot.data?.size ?? 0,
                       itemBuilder: ((context, index) {
+                        double rate = (data.docs[index]['ratings'] /
+                            data.docs[index]['nums']);
                         return Padding(
                           padding: const EdgeInsets.all(2.0),
                           child: Card(
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: ListTile(
+                                subtitle: TextRegular(
+                                    text: '${rate.toStringAsFixed(2)} ★',
+                                    fontSize: 12,
+                                    color: Colors.amber),
                                 onTap: () {
                                   box.write('uid', data.docs[index].id);
                                   Navigator.of(context).push(MaterialPageRoute(
@@ -175,7 +182,7 @@ class _StationTabState extends State<StationTab> {
                                 ),
                                 title: TextBold(
                                     text: data.docs[index]['name'],
-                                    fontSize: 14,
+                                    fontSize: 18,
                                     color: Colors.black),
                                 trailing: TextRegular(
                                     text:
