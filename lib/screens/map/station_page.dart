@@ -98,6 +98,10 @@ class _StationPageState extends State<StationPage> {
                       }
 
                       dynamic data = snapshot.data;
+
+                      List rev = data['reviews'];
+                      print(rev);
+                      print(FirebaseAuth.instance.currentUser!.uid);
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -256,103 +260,118 @@ class _StationPageState extends State<StationPage> {
                           const SizedBox(
                             height: 20,
                           ),
-                          MaterialButton(
-                              minWidth: 150,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(100),
-                              ),
-                              color: Colors.amber,
-                              onPressed: () {
-                                showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return Dialog(
-                                        child: SizedBox(
-                                          width: 80,
-                                          height: 100,
-                                          child: Column(
-                                            children: [
-                                              const SizedBox(
-                                                height: 10,
-                                              ),
-                                              TextBold(
-                                                  text: 'Rate Service Provider',
-                                                  fontSize: 18,
-                                                  color: Colors.amber),
-                                              const SizedBox(
-                                                height: 10,
-                                              ),
-                                              Center(
-                                                child: RatingBar.builder(
-                                                  initialRating: 5,
-                                                  minRating: 1,
-                                                  direction: Axis.horizontal,
-                                                  allowHalfRating: false,
-                                                  itemCount: 5,
-                                                  itemPadding: const EdgeInsets
-                                                          .symmetric(
-                                                      horizontal: 0.0),
-                                                  itemBuilder: (context, _) =>
-                                                      const Icon(
-                                                    Icons.star,
-                                                    color: Colors.amber,
+                          rev.contains(
+                                      FirebaseAuth.instance.currentUser!.uid) !=
+                                  true
+                              ? MaterialButton(
+                                  minWidth: 150,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(100),
+                                  ),
+                                  color: Colors.amber,
+                                  onPressed: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return Dialog(
+                                            child: SizedBox(
+                                              width: 80,
+                                              height: 100,
+                                              child: Column(
+                                                children: [
+                                                  const SizedBox(
+                                                    height: 10,
                                                   ),
-                                                  onRatingUpdate:
-                                                      (rating) async {
-                                                    var collection =
-                                                        FirebaseFirestore
-                                                            .instance
-                                                            .collection(
-                                                                'Providers')
-                                                            .where('id',
-                                                                isEqualTo:
-                                                                    data['id']);
+                                                  TextBold(
+                                                      text:
+                                                          'Rate Service Provider',
+                                                      fontSize: 18,
+                                                      color: Colors.amber),
+                                                  const SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Center(
+                                                    child: RatingBar.builder(
+                                                      initialRating: 5,
+                                                      minRating: 1,
+                                                      direction:
+                                                          Axis.horizontal,
+                                                      allowHalfRating: false,
+                                                      itemCount: 5,
+                                                      itemPadding:
+                                                          const EdgeInsets
+                                                                  .symmetric(
+                                                              horizontal: 0.0),
+                                                      itemBuilder:
+                                                          (context, _) =>
+                                                              const Icon(
+                                                        Icons.star,
+                                                        color: Colors.amber,
+                                                      ),
+                                                      onRatingUpdate:
+                                                          (rating) async {
+                                                        var collection =
+                                                            FirebaseFirestore
+                                                                .instance
+                                                                .collection(
+                                                                    'Providers')
+                                                                .where('id',
+                                                                    isEqualTo:
+                                                                        data[
+                                                                            'id']);
 
-                                                    var querySnapshot =
-                                                        await collection.get();
+                                                        var querySnapshot =
+                                                            await collection
+                                                                .get();
 
-                                                    for (var queryDocumentSnapshot
-                                                        in querySnapshot.docs) {
-                                                      Map<String, dynamic>
-                                                          data1 =
-                                                          queryDocumentSnapshot
-                                                              .data();
+                                                        for (var queryDocumentSnapshot
+                                                            in querySnapshot
+                                                                .docs) {
+                                                          Map<String, dynamic>
+                                                              data1 =
+                                                              queryDocumentSnapshot
+                                                                  .data();
 
-                                                      FirebaseFirestore.instance
-                                                          .collection(
-                                                              'Providers')
-                                                          .doc(data['id'])
-                                                          .update({
-                                                        'reviews': FieldValue
-                                                            .arrayUnion([
-                                                          FirebaseAuth.instance
-                                                              .currentUser!.uid
-                                                        ]),
-                                                        'ratings':
-                                                            data1['ratings'] +
+                                                          FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  'Providers')
+                                                              .doc(data['id'])
+                                                              .update({
+                                                            'reviews': FieldValue
+                                                                .arrayUnion([
+                                                              FirebaseAuth
+                                                                  .instance
+                                                                  .currentUser!
+                                                                  .uid
+                                                            ]),
+                                                            'ratings': data1[
+                                                                    'ratings'] +
                                                                 rating,
-                                                        'nums':
-                                                            data1['nums'] + 1,
-                                                      });
-                                                    }
+                                                            'nums':
+                                                                data1['nums'] +
+                                                                    1,
+                                                          });
+                                                        }
 
-                                                    Navigator.pop(context);
+                                                        Navigator.pop(context);
 
-                                                    print(rating);
-                                                  },
-                                                ),
+                                                        print(rating);
+                                                      },
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    });
-                              },
-                              child: TextRegular(
-                                text: 'Rate Provider',
-                                fontSize: 14,
-                                color: Colors.white,
-                              ))
+                                            ),
+                                          );
+                                        });
+                                  },
+                                  child: TextRegular(
+                                    text: 'Rate Provider',
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                  ))
+                              : const SizedBox(),
                         ],
                       );
                     })
