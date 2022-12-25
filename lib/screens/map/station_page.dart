@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:the_serve_new/services/cloud_function/add_comment.dart';
@@ -266,25 +267,120 @@ class _StationPageState extends State<StationPage> {
                                     ),
                                   ],
                                 ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                MaterialButton(
+                                    minWidth: 150,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(100),
+                                    ),
+                                    color: Colors.amber,
+                                    onPressed: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return Dialog(
+                                              child: SizedBox(
+                                                width: 80,
+                                                height: 100,
+                                                child: Column(
+                                                  children: [
+                                                    const SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    TextBold(
+                                                        text:
+                                                            'Rate Service Provider',
+                                                        fontSize: 18,
+                                                        color: Colors.amber),
+                                                    const SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    Center(
+                                                      child: RatingBar.builder(
+                                                        initialRating: 5,
+                                                        minRating: 1,
+                                                        direction:
+                                                            Axis.horizontal,
+                                                        allowHalfRating: false,
+                                                        itemCount: 5,
+                                                        itemPadding:
+                                                            const EdgeInsets
+                                                                    .symmetric(
+                                                                horizontal:
+                                                                    0.0),
+                                                        itemBuilder:
+                                                            (context, _) =>
+                                                                const Icon(
+                                                          Icons.star,
+                                                          color: Colors.amber,
+                                                        ),
+                                                        onRatingUpdate:
+                                                            (rating) async {
+                                                          var collection =
+                                                              FirebaseFirestore
+                                                                  .instance
+                                                                  .collection(
+                                                                      'Providers')
+                                                                  .where('id',
+                                                                      isEqualTo:
+                                                                          data[
+                                                                              'id']);
+
+                                                          var querySnapshot =
+                                                              await collection
+                                                                  .get();
+
+                                                          for (var queryDocumentSnapshot
+                                                              in querySnapshot
+                                                                  .docs) {
+                                                            Map<String, dynamic>
+                                                                data1 =
+                                                                queryDocumentSnapshot
+                                                                    .data();
+
+                                                            FirebaseFirestore
+                                                                .instance
+                                                                .collection(
+                                                                    'Providers')
+                                                                .doc(data['id'])
+                                                                .update({
+                                                              'reviews': FieldValue
+                                                                  .arrayUnion([
+                                                                FirebaseAuth
+                                                                    .instance
+                                                                    .currentUser!
+                                                                    .uid
+                                                              ]),
+                                                              'ratings': data1[
+                                                                      'ratings'] +
+                                                                  rating,
+                                                            });
+                                                          }
+
+                                                          Navigator.pop(
+                                                              context);
+
+                                                          print(rating);
+                                                        },
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          });
+                                    },
+                                    child: TextRegular(
+                                      text: 'Rate Provider',
+                                      fontSize: 14,
+                                      color: Colors.white,
+                                    ))
                               ],
                             );
                           });
                     }),
-                const SizedBox(
-                  height: 20,
-                ),
-                MaterialButton(
-                    minWidth: 150,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    color: Colors.amber,
-                    onPressed: () {},
-                    child: TextRegular(
-                      text: 'Rate Provider',
-                      fontSize: 14,
-                      color: Colors.white,
-                    ))
               ],
             ),
           ),
