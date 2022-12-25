@@ -99,14 +99,12 @@ class _MapTabState extends State<MapTab> {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
 
-    if (!mounted) {
-      setState(() {
-        lat = position.latitude;
-        long = position.longitude;
+    setState(() {
+      lat = position.latitude;
+      long = position.longitude;
 
-        hasLoaded = true;
-      });
-    }
+      hasLoaded = true;
+    });
 
     addPolyline(0, 0, Colors.transparent);
   }

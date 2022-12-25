@@ -19,6 +19,7 @@ Future addComp(String name, String contactNumber, String email, String url,
     'type': type,
     'ratings': 0,
     'reviews': [],
+    'nums': 0
   };
 
   await docUser.set(json);

@@ -46,14 +46,13 @@ class _StationPageState extends State<StationPage> {
         .where('id', isEqualTo: FirebaseAuth.instance.currentUser!.uid);
 
     var querySnapshot = await collection.get();
-    if (mounted) {
-      setState(() {
-        for (var queryDocumentSnapshot in querySnapshot.docs) {
-          Map<String, dynamic> data = queryDocumentSnapshot.data();
-          name = data['name'];
-        }
-      });
-    }
+
+    setState(() {
+      for (var queryDocumentSnapshot in querySnapshot.docs) {
+        Map<String, dynamic> data = queryDocumentSnapshot.data();
+        name = data['name'];
+      }
+    });
   }
 
   @override
@@ -84,303 +83,279 @@ class _StationPageState extends State<StationPage> {
           SingleChildScrollView(
             child: Column(
               children: [
-                StreamBuilder<Object>(
-                    stream: null,
-                    builder: (context, snapshot) {
-                      return StreamBuilder<DocumentSnapshot>(
-                          stream: userData,
-                          builder: (context,
-                              AsyncSnapshot<DocumentSnapshot> snapshot) {
-                            if (!snapshot.hasData) {
-                              return const Center(
-                                  child: CircularProgressIndicator());
-                            } else if (snapshot.hasError) {
-                              return const Center(
-                                  child: Text('Something went wrong'));
-                            } else if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const Center(
-                                  child: CircularProgressIndicator());
-                            }
+                StreamBuilder<DocumentSnapshot>(
+                    stream: userData,
+                    builder:
+                        (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+                      if (!snapshot.hasData) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return const Center(
+                            child: Text('Something went wrong'));
+                      } else if (snapshot.connectionState ==
+                          ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
 
-                            dynamic data = snapshot.data;
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                Container(
-                                  height: 200,
-                                  width: 300,
+                      dynamic data = snapshot.data;
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                            height: 200,
+                            width: 300,
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: NetworkImage(data['logo']))),
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          TextBold(
+                              text: data['name'],
+                              fontSize: 18,
+                              color: Colors.black),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                            margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              border: Border.all(
+                                color: Colors.grey,
+                              ),
+                            ),
+                            child: TextFormField(
+                              maxLines: 5,
+                              controller: commentController,
+                              decoration: const InputDecoration(
+                                hintText: ' Leave a comment',
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          ButtonWidget(
+                              onPressed: () {
+                                addComment(
+                                    name, commentController.text, data['id']);
+                                showToast();
+                                commentController.clear();
+                              },
+                              text: 'Send'),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              GestureDetector(
+                                onTap: () async {
+                                  final text = 'sms:${data['contactNumber']}';
+                                  if (await canLaunch(text)) {
+                                    await launch(text);
+                                  }
+                                },
+                                child: Container(
                                   decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image: NetworkImage(data['logo']))),
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                TextBold(
-                                    text: data['name'],
-                                    fontSize: 18,
-                                    color: Colors.black),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Container(
-                                  margin:
-                                      const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(5),
+                                    borderRadius: BorderRadius.circular(10),
                                     border: Border.all(
-                                      color: Colors.grey,
+                                      color: Colors.blue,
+                                      width: 3,
                                     ),
                                   ),
-                                  child: TextFormField(
-                                    maxLines: 5,
-                                    controller: commentController,
-                                    decoration: const InputDecoration(
-                                      hintText: ' Leave a comment',
+                                  height: 40,
+                                  width: 75,
+                                  child: Center(
+                                      child: TextBold(
+                                          text: 'MESSAGE',
+                                          fontSize: 14,
+                                          color: Colors.black)),
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () async {
+                                  final text = 'tel:${data['contactNumber']}';
+                                  if (await canLaunch(text)) {
+                                    await launch(text);
+                                  }
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(
+                                      color: Colors.blue,
+                                      width: 3,
                                     ),
                                   ),
+                                  height: 40,
+                                  width: 75,
+                                  child: Center(
+                                      child: TextBold(
+                                          text: 'CALL',
+                                          fontSize: 14,
+                                          color: Colors.black)),
                                 ),
-                                const SizedBox(
-                                  height: 5,
+                              ),
+                              GestureDetector(
+                                onTap: () async {
+                                  final text = 'https:${data['url']}';
+                                  if (await canLaunch(text)) {
+                                    await launch(text);
+                                  }
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(
+                                      color: Colors.blue,
+                                      width: 3,
+                                    ),
+                                  ),
+                                  height: 40,
+                                  width: 75,
+                                  child: Center(
+                                      child: TextBold(
+                                          text: 'URL',
+                                          fontSize: 14,
+                                          color: Colors.black)),
                                 ),
-                                ButtonWidget(
-                                    onPressed: () {
-                                      addComment(name, commentController.text,
-                                          data['id']);
-                                      showToast();
-                                      commentController.clear();
-                                    },
-                                    text: 'Send'),
-                                const SizedBox(
-                                  height: 10,
+                              ),
+                              GestureDetector(
+                                onTap: () async {
+                                  final text = 'mailto:${data['email']}';
+                                  if (await canLaunch(text)) {
+                                    await launch(text);
+                                  }
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(
+                                      color: Colors.blue,
+                                      width: 3,
+                                    ),
+                                  ),
+                                  height: 40,
+                                  width: 75,
+                                  child: Center(
+                                      child: TextBold(
+                                          text: 'EMAIL',
+                                          fontSize: 14,
+                                          color: Colors.black)),
                                 ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () async {
-                                        final text =
-                                            'sms:${data['contactNumber']}';
-                                        if (await canLaunch(text)) {
-                                          await launch(text);
-                                        }
-                                      },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          border: Border.all(
-                                            color: Colors.blue,
-                                            width: 3,
-                                          ),
-                                        ),
-                                        height: 40,
-                                        width: 75,
-                                        child: Center(
-                                            child: TextBold(
-                                                text: 'MESSAGE',
-                                                fontSize: 14,
-                                                color: Colors.black)),
-                                      ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () async {
-                                        final text =
-                                            'tel:${data['contactNumber']}';
-                                        if (await canLaunch(text)) {
-                                          await launch(text);
-                                        }
-                                      },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          border: Border.all(
-                                            color: Colors.blue,
-                                            width: 3,
-                                          ),
-                                        ),
-                                        height: 40,
-                                        width: 75,
-                                        child: Center(
-                                            child: TextBold(
-                                                text: 'CALL',
-                                                fontSize: 14,
-                                                color: Colors.black)),
-                                      ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () async {
-                                        final text = 'https:${data['url']}';
-                                        if (await canLaunch(text)) {
-                                          await launch(text);
-                                        }
-                                      },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          border: Border.all(
-                                            color: Colors.blue,
-                                            width: 3,
-                                          ),
-                                        ),
-                                        height: 40,
-                                        width: 75,
-                                        child: Center(
-                                            child: TextBold(
-                                                text: 'URL',
-                                                fontSize: 14,
-                                                color: Colors.black)),
-                                      ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () async {
-                                        final text = 'mailto:${data['email']}';
-                                        if (await canLaunch(text)) {
-                                          await launch(text);
-                                        }
-                                      },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          border: Border.all(
-                                            color: Colors.blue,
-                                            width: 3,
-                                          ),
-                                        ),
-                                        height: 40,
-                                        width: 75,
-                                        child: Center(
-                                            child: TextBold(
-                                                text: 'EMAIL',
-                                                fontSize: 14,
-                                                color: Colors.black)),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                MaterialButton(
-                                    minWidth: 150,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(100),
-                                    ),
-                                    color: Colors.amber,
-                                    onPressed: () {
-                                      showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            return Dialog(
-                                              child: SizedBox(
-                                                width: 80,
-                                                height: 100,
-                                                child: Column(
-                                                  children: [
-                                                    const SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    TextBold(
-                                                        text:
-                                                            'Rate Service Provider',
-                                                        fontSize: 18,
-                                                        color: Colors.amber),
-                                                    const SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    Center(
-                                                      child: RatingBar.builder(
-                                                        initialRating: 5,
-                                                        minRating: 1,
-                                                        direction:
-                                                            Axis.horizontal,
-                                                        allowHalfRating: false,
-                                                        itemCount: 5,
-                                                        itemPadding:
-                                                            const EdgeInsets
-                                                                    .symmetric(
-                                                                horizontal:
-                                                                    0.0),
-                                                        itemBuilder:
-                                                            (context, _) =>
-                                                                const Icon(
-                                                          Icons.star,
-                                                          color: Colors.amber,
-                                                        ),
-                                                        onRatingUpdate:
-                                                            (rating) async {
-                                                          var collection =
-                                                              FirebaseFirestore
-                                                                  .instance
-                                                                  .collection(
-                                                                      'Providers')
-                                                                  .where('id',
-                                                                      isEqualTo:
-                                                                          data[
-                                                                              'id']);
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          MaterialButton(
+                              minWidth: 150,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                              color: Colors.amber,
+                              onPressed: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return Dialog(
+                                        child: SizedBox(
+                                          width: 80,
+                                          height: 100,
+                                          child: Column(
+                                            children: [
+                                              const SizedBox(
+                                                height: 10,
+                                              ),
+                                              TextBold(
+                                                  text: 'Rate Service Provider',
+                                                  fontSize: 18,
+                                                  color: Colors.amber),
+                                              const SizedBox(
+                                                height: 10,
+                                              ),
+                                              Center(
+                                                child: RatingBar.builder(
+                                                  initialRating: 5,
+                                                  minRating: 1,
+                                                  direction: Axis.horizontal,
+                                                  allowHalfRating: false,
+                                                  itemCount: 5,
+                                                  itemPadding: const EdgeInsets
+                                                          .symmetric(
+                                                      horizontal: 0.0),
+                                                  itemBuilder: (context, _) =>
+                                                      const Icon(
+                                                    Icons.star,
+                                                    color: Colors.amber,
+                                                  ),
+                                                  onRatingUpdate:
+                                                      (rating) async {
+                                                    var collection =
+                                                        FirebaseFirestore
+                                                            .instance
+                                                            .collection(
+                                                                'Providers')
+                                                            .where('id',
+                                                                isEqualTo:
+                                                                    data['id']);
 
-                                                          var querySnapshot =
-                                                              await collection
-                                                                  .get();
+                                                    var querySnapshot =
+                                                        await collection.get();
 
-                                                          for (var queryDocumentSnapshot
-                                                              in querySnapshot
-                                                                  .docs) {
-                                                            Map<String, dynamic>
-                                                                data1 =
-                                                                queryDocumentSnapshot
-                                                                    .data();
+                                                    for (var queryDocumentSnapshot
+                                                        in querySnapshot.docs) {
+                                                      Map<String, dynamic>
+                                                          data1 =
+                                                          queryDocumentSnapshot
+                                                              .data();
 
-                                                            FirebaseFirestore
-                                                                .instance
-                                                                .collection(
-                                                                    'Providers')
-                                                                .doc(data['id'])
-                                                                .update({
-                                                              'reviews': FieldValue
-                                                                  .arrayUnion([
-                                                                FirebaseAuth
-                                                                    .instance
-                                                                    .currentUser!
-                                                                    .uid
-                                                              ]),
-                                                              'ratings': data1[
-                                                                      'ratings'] +
-                                                                  rating,
-                                                            });
-                                                          }
+                                                      FirebaseFirestore.instance
+                                                          .collection(
+                                                              'Providers')
+                                                          .doc(data['id'])
+                                                          .update({
+                                                        'reviews': FieldValue
+                                                            .arrayUnion([
+                                                          FirebaseAuth.instance
+                                                              .currentUser!.uid
+                                                        ]),
+                                                        'ratings':
+                                                            data1['ratings'] +
+                                                                rating,
+                                                        'nums':
+                                                            data1['nums'] + 1,
+                                                      });
+                                                    }
 
-                                                          Navigator.pop(
-                                                              context);
+                                                    Navigator.pop(context);
 
-                                                          print(rating);
-                                                        },
-                                                      ),
-                                                    ),
-                                                  ],
+                                                    print(rating);
+                                                  },
                                                 ),
                                               ),
-                                            );
-                                          });
-                                    },
-                                    child: TextRegular(
-                                      text: 'Rate Provider',
-                                      fontSize: 14,
-                                      color: Colors.white,
-                                    ))
-                              ],
-                            );
-                          });
-                    }),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    });
+                              },
+                              child: TextRegular(
+                                text: 'Rate Provider',
+                                fontSize: 14,
+                                color: Colors.white,
+                              ))
+                        ],
+                      );
+                    })
               ],
             ),
           ),
