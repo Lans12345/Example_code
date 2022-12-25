@@ -170,7 +170,7 @@ class _MapTabState extends State<MapTab> {
               final data = snapshot.requireData;
               return Container(
                 color: Colors.white30,
-                height: 100,
+                height: 130,
                 width: double.infinity,
                 child: ListView.builder(
                     itemCount: snapshot.data?.size ?? 0,
@@ -197,15 +197,15 @@ class _MapTabState extends State<MapTab> {
                             elevation: 3,
                             child: Container(
                               width: 180,
-                              height: 50,
+                              height: 80,
                               color: Colors.white,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   ListTile(
                                     subtitle: TextRegular(
-                                        text: rate.toStringAsFixed(2),
-                                        fontSize: 10,
+                                        text: '${rate.toStringAsFixed(2)} ★',
+                                        fontSize: 12,
                                         color: Colors.amber),
                                     leading: CircleAvatar(
                                       minRadius: 18,
@@ -221,7 +221,7 @@ class _MapTabState extends State<MapTab> {
                                   ),
                                   TextBold(
                                       text:
-                                          '${calculateDistance(lat, long, data.docs[index]['lat'], data.docs[index]['lang']).toStringAsFixed(2)}kms away, ${(calculateDistance(lat, long, data.docs[index]['lat'], data.docs[index]['lang']) / 55).toStringAsFixed(2)}mins',
+                                          '${calculateDistance(lat, long, data.docs[index]['lat'], data.docs[index]['lang']).toStringAsFixed(2)}kms away, ${(calculateDistance(lat, long, data.docs[index]['lat'], data.docs[index]['lang']) / 55).toStringAsFixed(2)}hrs',
                                       fontSize: 12,
                                       color: Colors.black),
                                 ],
