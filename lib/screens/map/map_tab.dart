@@ -47,6 +47,8 @@ class _MapTabState extends State<MapTab> {
 
           print('${data9.length}lasd ');
           var sourcePosition = LatLng(data9['lat'], data9['lang']);
+
+          print(data9['lat']);
           _marker.add(Marker(
             infoWindow: InfoWindow(
               title: data9['name'],
@@ -164,6 +166,7 @@ class _MapTabState extends State<MapTab> {
                 child: GoogleMap(
                   myLocationEnabled: true,
                   polylines: {_poly},
+                  markers: Set<Marker>.from(_marker),
                   mapType: MapType.normal,
                   initialCameraPosition: kGooglePlex,
                   onMapCreated: (GoogleMapController controller) {
