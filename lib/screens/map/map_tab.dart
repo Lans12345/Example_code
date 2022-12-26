@@ -26,8 +26,38 @@ class _MapTabState extends State<MapTab> {
     super.initState();
     getLocation();
     _determinePosition();
+    getData();
 
     print(lat);
+  }
+
+  final Set<Marker> _marker = <Marker>{};
+
+  getData() async {
+    // Use provider
+    var collection = FirebaseFirestore.instance
+        .collection('Providers')
+        .where('type', isEqualTo: box.read('service'));
+
+    var querySnapshot = await collection.get();
+    if (mounted) {
+      setState(() {
+        for (var queryDocumentSnapshot in querySnapshot.docs) {
+          Map<String, dynamic> data9 = queryDocumentSnapshot.data();
+
+          print('${data9.length}lasd ');
+          var sourcePosition = LatLng(data9['lat'], data9['lang']);
+          _marker.add(Marker(
+            infoWindow: InfoWindow(
+              title: data9['name'],
+            ),
+            markerId: MarkerId(data9['name']),
+            icon: BitmapDescriptor.defaultMarker,
+            position: sourcePosition,
+          ));
+        }
+      });
+    }
   }
 
   Future<Position> _determinePosition() async {
