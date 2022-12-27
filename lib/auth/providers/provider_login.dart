@@ -17,6 +17,8 @@ class _ProviderLoginState extends State<ProviderLogin> {
 
   late String password;
 
+  var isObscure = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,16 +65,23 @@ class _ProviderLoginState extends State<ProviderLogin> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
                 child: TextFormField(
-                  obscureText: true,
+                  obscureText: isObscure,
                   style: const TextStyle(
                       color: Colors.black, fontFamily: 'QRegular'),
                   onChanged: (input) {
                     password = input;
                   },
                   decoration: InputDecoration(
-                    suffixIcon: const Icon(
-                      Icons.lock,
-                      color: Colors.black,
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          isObscure = !isObscure;
+                        });
+                      },
+                      icon: Icon(
+                        isObscure ? Icons.visibility : Icons.visibility_off,
+                        color: Colors.black,
+                      ),
                     ),
                     fillColor: Colors.white,
                     filled: true,

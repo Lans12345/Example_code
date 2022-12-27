@@ -32,6 +32,8 @@ class _SignupPageState extends State<SignupPage> {
 
   var course = 'IT';
 
+  var isObscure = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -153,13 +155,24 @@ class _SignupPageState extends State<SignupPage> {
             Padding(
               padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
               child: TextFormField(
-                obscureText: true,
+                obscureText: isObscure,
                 style: const TextStyle(
                     color: Colors.black, fontFamily: 'QRegular'),
                 onChanged: (input) {
                   password = input;
                 },
                 decoration: InputDecoration(
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        isObscure = !isObscure;
+                      });
+                    },
+                    icon: Icon(
+                      isObscure ? Icons.visibility : Icons.visibility_off,
+                      color: Colors.black,
+                    ),
+                  ),
                   fillColor: Colors.grey[200],
                   filled: true,
                   enabledBorder: OutlineInputBorder(
