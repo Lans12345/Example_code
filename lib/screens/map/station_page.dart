@@ -271,12 +271,73 @@ class _StationPageState extends State<StationPage> {
                             height: 20,
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(left: 20, right: 20),
+                            padding: const EdgeInsets.only(
+                                left: 20, right: 20, bottom: 20),
                             child: ExpansionTile(
                               title: TextBold(
                                   text: 'View Ratings',
                                   fontSize: 14,
                                   color: Colors.amber),
+                              children: [
+                                StreamBuilder<QuerySnapshot>(
+                                    stream: FirebaseFirestore.instance
+                                        .collection('Ratings')
+                                        .where('uid', isEqualTo: data['id'])
+                                        .snapshots(),
+                                    builder: (BuildContext context,
+                                        AsyncSnapshot<QuerySnapshot> snapshot) {
+                                      if (snapshot.hasError) {
+                                        print('error');
+                                        return const Center(
+                                            child: Text('Error'));
+                                      }
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        print('waiting');
+                                        return const Padding(
+                                          padding: EdgeInsets.only(top: 50),
+                                          child: Center(
+                                              child: CircularProgressIndicator(
+                                            color: Colors.black,
+                                          )),
+                                        );
+                                      }
+
+                                      final data111 = snapshot.requireData;
+                                      return SizedBox(
+                                        height: 250,
+                                        child: ListView.builder(
+                                            itemCount: snapshot.data?.size ?? 0,
+                                            itemBuilder: (context, index) {
+                                              return ListTile(
+                                                subtitle: TextRegular(
+                                                    text:
+                                                        '${data111.docs[index]['star']} ★',
+                                                    fontSize: 12,
+                                                    color: Colors.amber),
+                                                title: TextBold(
+                                                    text: data111.docs[index]
+                                                        ['name'],
+                                                    fontSize: 14,
+                                                    color: Colors.black),
+                                                trailing: TextRegular(
+                                                    text: data111.docs[index]
+                                                        ['date'],
+                                                    fontSize: 12,
+                                                    color: Colors.grey),
+                                                leading: CircleAvatar(
+                                                  minRadius: 25,
+                                                  maxRadius: 25,
+                                                  backgroundImage: NetworkImage(
+                                                      data111.docs[index]
+                                                          ['profilePicture']),
+                                                ),
+                                                tileColor: Colors.white,
+                                              );
+                                            }),
+                                      );
+                                    }),
+                              ],
                             ),
                           ),
                           rev.contains(
@@ -397,6 +458,9 @@ class _StationPageState extends State<StationPage> {
                                     color: Colors.white,
                                   ))
                               : const SizedBox(),
+                          const SizedBox(
+                            height: 20,
+                          ),
                         ],
                       );
                     })
