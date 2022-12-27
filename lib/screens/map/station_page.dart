@@ -141,6 +141,13 @@ class _StationPageState extends State<StationPage> {
                           const SizedBox(
                             height: 10,
                           ),
+                          TextRegular(
+                              text: data['address'],
+                              fontSize: 14,
+                              color: Colors.grey),
+                          const SizedBox(
+                            height: 10,
+                          ),
                           Container(
                             margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                             decoration: BoxDecoration(
