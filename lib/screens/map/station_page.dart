@@ -131,8 +131,13 @@ class _StationPageState extends State<StationPage> {
                           ),
                           TextRegular(
                               text: data['contactNumber'],
-                              fontSize: 12,
+                              fontSize: 14,
                               color: Colors.grey),
+                          TextRegular(
+                              text:
+                                  'Open from ${data['open']} to ${data['close']}',
+                              fontSize: 10,
+                              color: Colors.black),
                           const SizedBox(
                             height: 10,
                           ),
