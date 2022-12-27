@@ -168,6 +168,10 @@ class _ProviderSignupState extends State<ProviderSignup> {
     });
   }
 
+  late String open = '';
+
+  late String close = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -203,14 +207,18 @@ class _ProviderSignupState extends State<ProviderSignup> {
               height: 5,
             ),
             TextRegular(
-                text: 'Picture of Station', fontSize: 12, color: Colors.grey),
+                text: 'Picture of Establishment',
+                fontSize: 12,
+                color: Colors.grey),
             // Image.asset(
             //   'assets/images/signup.gif',
             //   height: 180,
             // ),
             const SizedBox(height: 20),
             TextBold(
-                text: 'Company Information', fontSize: 18, color: Colors.black),
+                text: 'Store/Shop Information',
+                fontSize: 18,
+                color: Colors.black),
             const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
@@ -235,7 +243,7 @@ class _ProviderSignupState extends State<ProviderSignup> {
                     borderSide: const BorderSide(width: 1, color: Colors.black),
                     borderRadius: BorderRadius.circular(5),
                   ),
-                  labelText: 'Company Name',
+                  labelText: 'Store/Shop Name',
                   labelStyle: const TextStyle(
                     fontFamily: 'QRegular',
                     color: Colors.black,
@@ -269,7 +277,7 @@ class _ProviderSignupState extends State<ProviderSignup> {
                     borderSide: const BorderSide(width: 1, color: Colors.black),
                     borderRadius: BorderRadius.circular(5),
                   ),
-                  labelText: 'Company Contact Number',
+                  labelText: 'Store/Shop Contact Number',
                   labelStyle: const TextStyle(
                     fontFamily: 'QRegular',
                     color: Colors.black,
@@ -301,7 +309,7 @@ class _ProviderSignupState extends State<ProviderSignup> {
                     borderSide: const BorderSide(width: 1, color: Colors.black),
                     borderRadius: BorderRadius.circular(5),
                   ),
-                  labelText: 'Company Website',
+                  labelText: 'Website/Facebook/Instagram Link',
                   labelStyle: const TextStyle(
                     fontFamily: 'QRegular',
                     color: Colors.black,
@@ -420,6 +428,70 @@ class _ProviderSignupState extends State<ProviderSignup> {
                 ),
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
+              child: TextFormField(
+                style: const TextStyle(
+                    color: Colors.black, fontFamily: 'QRegular'),
+                onChanged: (input) {
+                  open = input;
+                },
+                decoration: InputDecoration(
+                  suffixIcon: const Icon(
+                    Icons.timelapse_rounded,
+                    color: Colors.black,
+                  ),
+                  fillColor: Colors.grey[200],
+                  filled: true,
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(width: 1, color: Colors.white),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(width: 1, color: Colors.black),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  labelText: 'Opening hours',
+                  labelStyle: const TextStyle(
+                    fontFamily: 'QRegular',
+                    color: Colors.black,
+                    fontSize: 12.0,
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
+              child: TextFormField(
+                style: const TextStyle(
+                    color: Colors.black, fontFamily: 'QRegular'),
+                onChanged: (input) {
+                  close = input;
+                },
+                decoration: InputDecoration(
+                  suffixIcon: const Icon(
+                    Icons.timelapse_rounded,
+                    color: Colors.black,
+                  ),
+                  fillColor: Colors.grey[200],
+                  filled: true,
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(width: 1, color: Colors.white),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(width: 1, color: Colors.black),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  labelText: 'Closing hours',
+                  labelStyle: const TextStyle(
+                    fontFamily: 'QRegular',
+                    color: Colors.black,
+                    fontSize: 12.0,
+                  ),
+                ),
+              ),
+            ),
             const SizedBox(height: 20),
             TextBold(
                 text: 'Login Credentials', fontSize: 18, color: Colors.black),
@@ -508,7 +580,7 @@ class _ProviderSignupState extends State<ProviderSignup> {
                     await FirebaseAuth.instance.createUserWithEmailAndPassword(
                         email: email, password: password);
                     addComp(name, contactNumber, email, url, imageURL, lat,
-                        long, course);
+                        long, course, close, open);
                     showDialog(
                         barrierDismissible: false,
                         context: context,
