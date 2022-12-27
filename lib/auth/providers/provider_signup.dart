@@ -173,6 +173,81 @@ class _ProviderSignupState extends State<ProviderSignup> {
   late String close = '';
   var isObscure = true;
 
+  var hasLoaded1 = false;
+
+  firebase_storage.FirebaseStorage storage1 =
+      firebase_storage.FirebaseStorage.instance;
+
+  late String fileName1 = '';
+
+  late File imageFile1;
+
+  late String imageURL1 = '';
+
+  Future<void> uploadPicture1(String inputSource) async {
+    final picker = ImagePicker();
+    XFile pickedImage;
+    try {
+      pickedImage = (await picker.pickImage(
+          source: inputSource == 'camera'
+              ? ImageSource.camera
+              : ImageSource.gallery,
+          maxWidth: 1920))!;
+
+      fileName1 = path.basename(pickedImage.path);
+      imageFile1 = File(pickedImage.path);
+
+      try {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) => Padding(
+            padding: const EdgeInsets.only(left: 30, right: 30),
+            child: AlertDialog(
+                title: Row(
+              children: const [
+                CircularProgressIndicator(
+                  color: Colors.black,
+                ),
+                SizedBox(
+                  width: 20,
+                ),
+                Text(
+                  'Loading . . .',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'QRegular'),
+                ),
+              ],
+            )),
+          ),
+        );
+
+        await firebase_storage.FirebaseStorage.instance
+            .ref('Permit/$fileName')
+            .putFile(imageFile);
+        imageURL1 = await firebase_storage.FirebaseStorage.instance
+            .ref('Permit/$fileName')
+            .getDownloadURL();
+
+        setState(() {
+          hasLoaded1 = true;
+        });
+
+        Navigator.of(context).pop();
+      } on firebase_storage.FirebaseException catch (error) {
+        if (kDebugMode) {
+          print(error);
+        }
+      }
+    } catch (err) {
+      if (kDebugMode) {
+        print(err);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -520,6 +595,22 @@ class _ProviderSignupState extends State<ProviderSignup> {
                   ),
                 ),
               ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            TextRegular(
+                text: 'Picture to Business Permit/Other Permits',
+                fontSize: 12,
+                color: Colors.grey),
+            const SizedBox(
+              height: 5,
+            ),
+            Container(
+              height: 100,
+              width: 100,
+              color: Colors.black,
+              child: Icon(Icons.add, color: Colors.white),
             ),
             const SizedBox(height: 20),
             TextBold(
