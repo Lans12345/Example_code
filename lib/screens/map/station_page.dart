@@ -127,6 +127,13 @@ class _StationPageState extends State<StationPage> {
                               fontSize: 18,
                               color: Colors.black),
                           const SizedBox(
+                            height: 5,
+                          ),
+                          TextRegular(
+                              text: data['contactNumber'],
+                              fontSize: 12,
+                              color: Colors.grey),
+                          const SizedBox(
                             height: 10,
                           ),
                           Container(
@@ -262,6 +269,15 @@ class _StationPageState extends State<StationPage> {
                           ),
                           const SizedBox(
                             height: 20,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 20, right: 20),
+                            child: ExpansionTile(
+                              title: TextBold(
+                                  text: 'View Ratings',
+                                  fontSize: 14,
+                                  color: Colors.amber),
+                            ),
                           ),
                           rev.contains(
                                       FirebaseAuth.instance.currentUser!.uid) !=
