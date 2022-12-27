@@ -166,7 +166,7 @@ class _StationPageState extends State<StationPage> {
                             height: 10,
                           ),
                           TextRegular(
-                              text: data['address'],
+                              text: 'Located at: ' + data['address'],
                               fontSize: 14,
                               color: Colors.grey),
                           const SizedBox(
