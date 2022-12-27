@@ -111,6 +111,13 @@ class _StationPageState extends State<StationPage> {
                           const SizedBox(
                             height: 20,
                           ),
+                          Align(
+                            alignment: Alignment.bottomRight,
+                            child: IconButton(
+                              onPressed: () {},
+                              icon: const Icon(Icons.info, color: Colors.blue),
+                            ),
+                          ),
                           Container(
                             height: 200,
                             width: 300,
