@@ -5,6 +5,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:the_serve_new/services/cloud_function/add_comment.dart';
+import 'package:the_serve_new/services/cloud_function/add_ratings.dart';
 import 'package:the_serve_new/widgets/button_widget.dart';
 import 'package:the_serve_new/widgets/text_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -38,6 +39,7 @@ class _StationPageState extends State<StationPage> {
   }
 
   late String name = '';
+  late String profilePicture = '';
 
   getData() async {
     // Use provider
@@ -51,6 +53,7 @@ class _StationPageState extends State<StationPage> {
       for (var queryDocumentSnapshot in querySnapshot.docs) {
         Map<String, dynamic> data = queryDocumentSnapshot.data();
         name = data['name'];
+        profilePicture = data['profilePicture'];
       }
     });
   }
@@ -353,6 +356,12 @@ class _StationPageState extends State<StationPage> {
                                                                     1,
                                                           });
                                                         }
+
+                                                        addRatings(
+                                                            name,
+                                                            rating.toInt(),
+                                                            data['id'],
+                                                            profilePicture);
 
                                                         Navigator.pop(context);
 

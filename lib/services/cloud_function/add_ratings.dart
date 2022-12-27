@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 
 Future addRatings(
@@ -14,6 +15,7 @@ Future addRatings(
     'uid': userId,
     'profilePicture': profilePicture,
     'date': tdata,
+    'myId': FirebaseAuth.instance.currentUser!.uid,
   };
 
   await docUser.set(json);
