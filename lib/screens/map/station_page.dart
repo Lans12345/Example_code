@@ -114,7 +114,24 @@ class _StationPageState extends State<StationPage> {
                           Align(
                             alignment: Alignment.bottomRight,
                             child: IconButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return Dialog(
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                              image:
+                                                  NetworkImage(data['permit']),
+                                            ),
+                                          ),
+                                          height: 400,
+                                          width: 100,
+                                        ),
+                                      );
+                                    });
+                              },
                               icon: const Icon(Icons.info, color: Colors.blue),
                             ),
                           ),
