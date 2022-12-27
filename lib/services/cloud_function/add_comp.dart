@@ -11,7 +11,8 @@ Future addComp(
     double lang,
     String type,
     String close,
-    String open) async {
+    String open,
+    String address) async {
   final docUser = FirebaseFirestore.instance
       .collection('Providers')
       .doc(FirebaseAuth.instance.currentUser!.uid);
@@ -23,6 +24,7 @@ Future addComp(
     'url': url,
     'id': docUser.id,
     'logo': imageURL,
+    'address': address,
     'lat': lat,
     'lang': lang,
     'type': type,

@@ -28,6 +28,8 @@ class _ProviderSignupState extends State<ProviderSignup> {
     determinePosition();
   }
 
+  late String address;
+
   Future<Position> determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -68,8 +70,6 @@ class _ProviderSignupState extends State<ProviderSignup> {
   late String name;
 
   late String contactNumber;
-
-  late String address;
 
   late String email;
 
@@ -493,6 +493,34 @@ class _ProviderSignupState extends State<ProviderSignup> {
                 ),
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
+              child: TextFormField(
+                style: const TextStyle(
+                    color: Colors.black, fontFamily: 'QRegular'),
+                onChanged: (input) {
+                  address = input;
+                },
+                decoration: InputDecoration(
+                  fillColor: Colors.grey[200],
+                  filled: true,
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(width: 1, color: Colors.white),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(width: 1, color: Colors.black),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  labelText: 'Address',
+                  labelStyle: const TextStyle(
+                    fontFamily: 'QRegular',
+                    color: Colors.black,
+                    fontSize: 12.0,
+                  ),
+                ),
+              ),
+            ),
             const SizedBox(height: 20),
             TextBold(
                 text: 'Login Credentials', fontSize: 18, color: Colors.black),
@@ -592,7 +620,7 @@ class _ProviderSignupState extends State<ProviderSignup> {
                     await FirebaseAuth.instance.createUserWithEmailAndPassword(
                         email: email, password: password);
                     addComp(name, contactNumber, email, url, imageURL, lat,
-                        long, course, close, open);
+                        long, course, close, open, address);
                     showDialog(
                         barrierDismissible: false,
                         context: context,
