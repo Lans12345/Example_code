@@ -507,6 +507,10 @@ class _StationPageState extends State<StationPage> {
                                 text: data.docs[index]['name'],
                                 fontSize: 14,
                                 color: Colors.black),
+                            subtitle: TextBold(
+                                text: data.docs[index]['desc'],
+                                fontSize: 12,
+                                color: Colors.grey),
                             trailing: TextBold(
                                 text: data.docs[index]['price'],
                                 fontSize: 12,
