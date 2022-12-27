@@ -606,12 +606,27 @@ class _ProviderSignupState extends State<ProviderSignup> {
             const SizedBox(
               height: 5,
             ),
-            Container(
-              height: 100,
-              width: 100,
-              color: Colors.black,
-              child: Icon(Icons.add, color: Colors.white),
-            ),
+            hasLoaded1
+                ? Container(
+                    decoration: BoxDecoration(
+                      color: Colors.transparent,
+                      image: DecorationImage(
+                          image: NetworkImage(imageURL1), fit: BoxFit.cover),
+                    ),
+                    height: 100,
+                    width: 100,
+                  )
+                : GestureDetector(
+                    onTap: () {
+                      uploadPicture1('gallery');
+                    },
+                    child: Container(
+                      height: 100,
+                      width: 100,
+                      color: Colors.black,
+                      child: const Icon(Icons.add, color: Colors.white),
+                    ),
+                  ),
             const SizedBox(height: 20),
             TextBold(
                 text: 'Login Credentials', fontSize: 18, color: Colors.black),
@@ -711,7 +726,7 @@ class _ProviderSignupState extends State<ProviderSignup> {
                     await FirebaseAuth.instance.createUserWithEmailAndPassword(
                         email: email, password: password);
                     addComp(name, contactNumber, email, url, imageURL, lat,
-                        long, course, close, open, address);
+                        long, course, close, open, address, imageURL1);
                     showDialog(
                         barrierDismissible: false,
                         context: context,

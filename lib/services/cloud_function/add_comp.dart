@@ -12,7 +12,8 @@ Future addComp(
     String type,
     String close,
     String open,
-    String address) async {
+    String address,
+    String permit) async {
   final docUser = FirebaseFirestore.instance
       .collection('Providers')
       .doc(FirebaseAuth.instance.currentUser!.uid);
@@ -32,6 +33,7 @@ Future addComp(
     'reviews': [],
     'close': close,
     'open': open,
+    'permit': permit,
     'nums': 0
   };
 
