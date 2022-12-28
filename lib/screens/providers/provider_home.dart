@@ -5,6 +5,8 @@ import 'package:the_serve_new/auth/providers/provider_login.dart';
 import 'package:the_serve_new/screens/providers/add_product_provider.dart';
 import 'package:the_serve_new/widgets/text_widget.dart';
 
+import '../terms_conditions_page.dart';
+
 class ProviderHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -13,6 +15,13 @@ class ProviderHome extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.grey[200],
         appBar: AppBar(
+          leading: IconButton(
+            onPressed: () {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) => TermsPage()));
+            },
+            icon: const Icon(Icons.info),
+          ),
           bottom: const TabBar(tabs: [
             Tab(
               icon: Icon(Icons.post_add_rounded),

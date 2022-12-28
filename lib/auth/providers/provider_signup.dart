@@ -12,6 +12,8 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 
+import '../../screens/terms_conditions_page.dart';
+
 class ProviderSignup extends StatefulWidget {
   const ProviderSignup({Key? key}) : super(key: key);
 
@@ -815,6 +817,17 @@ class _ProviderSignupState extends State<ProviderSignup> {
               },
               child:
                   TextBold(text: 'Register', fontSize: 18, color: Colors.white),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) => TermsPage()));
+              },
+              child: TextBold(
+                  text:
+                      'Signing up means you agree\nto our Terms and Conditions',
+                  fontSize: 14,
+                  color: Colors.blue),
             ),
             const SizedBox(
               height: 50,

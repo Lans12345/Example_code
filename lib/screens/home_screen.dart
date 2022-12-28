@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:the_serve_new/auth/login_page.dart.dart';
 import 'package:the_serve_new/screens/map/map_screen.dart';
+import 'package:the_serve_new/screens/terms_conditions_page.dart';
 import 'package:the_serve_new/widgets/service_container.dart';
 import 'package:the_serve_new/widgets/text_widget.dart';
 
@@ -15,6 +16,13 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (context) => TermsPage()));
+          },
+          icon: const Icon(Icons.info),
+        ),
         automaticallyImplyLeading: false,
         actions: [
           IconButton(

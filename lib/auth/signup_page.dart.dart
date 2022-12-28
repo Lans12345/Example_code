@@ -196,17 +196,6 @@ class _SignupPageState extends State<SignupPage> {
             const SizedBox(
               height: 30,
             ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => TermsPage()));
-              },
-              child: TextBold(
-                  text:
-                      'Signing up means you agree\nto our Terms and Conditions',
-                  fontSize: 14,
-                  color: Colors.blue),
-            ),
             MaterialButton(
               height: 50,
               shape: RoundedRectangleBorder(
@@ -282,6 +271,17 @@ class _SignupPageState extends State<SignupPage> {
               },
               child:
                   TextBold(text: 'Register', fontSize: 18, color: Colors.white),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) => TermsPage()));
+              },
+              child: TextBold(
+                  text:
+                      'Signing up means you agree\nto our Terms and Conditions',
+                  fontSize: 14,
+                  color: Colors.blue),
             ),
             const SizedBox(
               height: 50,
