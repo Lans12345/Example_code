@@ -11,7 +11,7 @@ class ProviderHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         backgroundColor: Colors.grey[200],
         appBar: AppBar(
@@ -30,6 +30,10 @@ class ProviderHome extends StatelessWidget {
             Tab(
               icon: Icon(Icons.feedback),
               text: 'Feedbacks',
+            ),
+            Tab(
+              icon: Icon(Icons.star),
+              text: 'Ratings',
             ),
           ]),
           automaticallyImplyLeading: false,
@@ -195,6 +199,56 @@ class ProviderHome extends StatelessWidget {
                               fontSize: 10,
                               color: Colors.grey),
                         ),
+                      );
+                    }));
+              }),
+          StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('Ratings')
+                  .where('uid',
+                      isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+                  .snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  print('error');
+                  return const Center(child: Text('Error'));
+                }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  print('waiting');
+                  return const Padding(
+                    padding: EdgeInsets.only(top: 50),
+                    child: Center(
+                        child: CircularProgressIndicator(
+                      color: Colors.black,
+                    )),
+                  );
+                }
+
+                final data = snapshot.requireData;
+                return ListView.builder(
+                    itemCount: snapshot.data?.size ?? 0,
+                    itemBuilder: ((context, index) {
+                      return ListTile(
+                        subtitle: TextRegular(
+                            text: '${data.docs[index]['star']} ★',
+                            fontSize: 12,
+                            color: Colors.amber),
+                        title: TextBold(
+                            text: data.docs[index]['name'],
+                            fontSize: 14,
+                            color: Colors.black),
+                        trailing: TextRegular(
+                            text: data.docs[index]['date'],
+                            fontSize: 12,
+                            color: Colors.grey),
+                        leading: CircleAvatar(
+                          minRadius: 25,
+                          maxRadius: 25,
+                          backgroundImage:
+                              NetworkImage(data.docs[index]['profilePicture']),
+                        ),
+                        tileColor: Colors.white,
                       );
                     }));
               })
