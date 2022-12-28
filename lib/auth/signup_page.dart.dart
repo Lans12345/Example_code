@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:the_serve_new/screens/terms_conditions_page.dart';
 import 'package:the_serve_new/services/cloud_function/add_user.dart';
 import 'package:the_serve_new/widgets/button_widget.dart';
 import 'package:the_serve_new/widgets/text_widget.dart';
@@ -194,6 +195,17 @@ class _SignupPageState extends State<SignupPage> {
             ),
             const SizedBox(
               height: 30,
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) => TermsPage()));
+              },
+              child: TextBold(
+                  text:
+                      'Signing up means you agree\nto our Terms and Conditions',
+                  fontSize: 14,
+                  color: Colors.blue),
             ),
             MaterialButton(
               height: 50,
