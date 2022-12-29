@@ -200,7 +200,7 @@ class _AddProductState extends State<AddProduct> {
                             style: TextStyle(fontFamily: 'QRegular'),
                           ),
                           actions: <Widget>[
-                            FlatButton(
+                            MaterialButton(
                               onPressed: () async {
                                 addProduct(
                                     productNameController.text,

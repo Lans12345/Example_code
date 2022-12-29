@@ -40,7 +40,7 @@ class HomeScreen extends StatelessWidget {
                           style: TextStyle(fontFamily: 'QRegular'),
                         ),
                         actions: <Widget>[
-                          FlatButton(
+                          MaterialButton(
                             onPressed: () => Navigator.of(context).pop(true),
                             child: const Text(
                               'Close',
@@ -49,7 +49,7 @@ class HomeScreen extends StatelessWidget {
                                   fontWeight: FontWeight.bold),
                             ),
                           ),
-                          FlatButton(
+                          MaterialButton(
                             onPressed: () async {
                               await FirebaseAuth.instance.signOut();
                               Navigator.of(context).pushReplacement(

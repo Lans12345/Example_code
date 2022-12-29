@@ -99,31 +99,7 @@ class _StationTabState extends State<StationTab> {
     return Column(
       children: [
         const SizedBox(
-          height: 10,
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 10, right: 10),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-              border: Border.all(color: Colors.black),
-            ),
-            width: double.infinity,
-            height: 50,
-            child: TextFormField(
-              controller: cntrlr,
-              decoration: const InputDecoration(
-                hintText: 'Search a station',
-                prefixIcon: Icon(
-                  Icons.search,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(
-          height: 10,
+          height: 20,
         ),
         StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance
