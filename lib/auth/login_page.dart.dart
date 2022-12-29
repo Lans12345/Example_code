@@ -131,7 +131,7 @@ class _LoginPageState extends State<LoginPage> {
                                   color: Colors.black,
                                   fontSize: 12),
                               actions: <Widget>[
-                                FlatButton(
+                                MaterialButton(
                                   onPressed: () =>
                                       Navigator.of(context).pop(true),
                                   child: TextBold(
