@@ -177,9 +177,6 @@ class _ProviderSignupState extends State<ProviderSignup> {
 
   var hasLoaded1 = false;
 
-  firebase_storage.FirebaseStorage storage1 =
-      firebase_storage.FirebaseStorage.instance;
-
   late String fileName1 = '';
 
   late File imageFile1;
@@ -228,7 +225,7 @@ class _ProviderSignupState extends State<ProviderSignup> {
 
         await firebase_storage.FirebaseStorage.instance
             .ref('Permit/$fileName')
-            .putFile(imageFile);
+            .putFile(imageFile1);
         imageURL1 = await firebase_storage.FirebaseStorage.instance
             .ref('Permit/$fileName')
             .getDownloadURL();
