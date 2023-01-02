@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:the_serve_new/auth/providers/provider_login.dart';
@@ -116,12 +117,50 @@ class _LoginPageState extends State<LoginPage> {
                 color: Colors.blue,
                 onPressed: () async {
                   late var status;
+                  late bool isDeleted;
                   try {
-                    await FirebaseAuth.instance.signInWithEmailAndPassword(
-                        email: email, password: password);
+                    var collection = FirebaseFirestore.instance
+                        .collection('Users')
+                        .where('id',
+                            isEqualTo: FirebaseAuth.instance.currentUser!.uid);
 
-                    Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (context) => HomeScreen()));
+                    var querySnapshot = await collection.get();
+                    if (mounted) {
+                      setState(() {
+                        for (var queryDocumentSnapshot in querySnapshot.docs) {
+                          Map<String, dynamic> data =
+                              queryDocumentSnapshot.data();
+                          isDeleted = data['isDeleted'];
+                        }
+                      });
+                    }
+
+                    if (isDeleted == false) {
+                      await FirebaseAuth.instance.signInWithEmailAndPassword(
+                          email: email, password: password);
+
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => HomeScreen()));
+                    } else {
+                      showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                                content: TextRegular(
+                                    text: "This account has been deleted!",
+                                    color: Colors.black,
+                                    fontSize: 12),
+                                actions: <Widget>[
+                                  MaterialButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(true),
+                                    child: TextBold(
+                                        text: 'Close',
+                                        color: Colors.black,
+                                        fontSize: 12),
+                                  ),
+                                ],
+                              ));
+                    }
                   } catch (e) {
                     showDialog(
                         context: context,

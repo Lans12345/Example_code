@@ -34,7 +34,8 @@ Future addComp(
     'close': close,
     'open': open,
     'permit': permit,
-    'nums': 0
+    'nums': 0,
+    'isDeleted': false
   };
 
   await docUser.set(json);
