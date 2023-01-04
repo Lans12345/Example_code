@@ -1,13 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:the_serve_new/auth/providers/provider_login.dart';
 import 'package:the_serve_new/screens/providers/add_product_provider.dart';
+import 'package:the_serve_new/widgets/button_widget.dart';
 import 'package:the_serve_new/widgets/text_widget.dart';
 
 import '../terms_conditions_page.dart';
 
 class ProviderHome extends StatelessWidget {
+  late String name;
+  late String desc;
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -135,16 +139,110 @@ class ProviderHome extends StatelessWidget {
                                 text: data.docs[index]['desc'],
                                 fontSize: 12,
                                 color: Colors.grey),
-                            trailing: IconButton(
-                              onPressed: () {
-                                FirebaseFirestore.instance
-                                    .collection('Products')
-                                    .doc(data.docs[index].id)
-                                    .delete();
-                              },
-                              icon: const Icon(
-                                Icons.delete,
-                                color: Colors.red,
+                            trailing: SizedBox(
+                              width: 100,
+                              child: Row(
+                                children: [
+                                  IconButton(
+                                    onPressed: () {
+                                      FirebaseFirestore.instance
+                                          .collection('Products')
+                                          .doc(data.docs[index].id)
+                                          .delete();
+                                    },
+                                    icon: const Icon(
+                                      Icons.delete,
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    onPressed: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: ((context) {
+                                            return Dialog(
+                                              child: SizedBox(
+                                                height: 250,
+                                                child: Column(
+                                                  children: [
+                                                    SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                    Padding(
+                                                      padding: const EdgeInsets
+                                                              .fromLTRB(
+                                                          20, 5, 20, 5),
+                                                      child: TextFormField(
+                                                        decoration:
+                                                            InputDecoration(
+                                                          hintText:
+                                                              data.docs[index]
+                                                                  ['name'],
+                                                        ),
+                                                        onChanged: (_input) {
+                                                          name = _input;
+                                                        },
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding: const EdgeInsets
+                                                              .fromLTRB(
+                                                          20, 5, 20, 5),
+                                                      child: TextFormField(
+                                                        decoration:
+                                                            InputDecoration(
+                                                          hintText:
+                                                              data.docs[index]
+                                                                  ['desc'],
+                                                        ),
+                                                        onChanged: (_input) {
+                                                          desc = _input;
+                                                        },
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                    ButtonWidget(
+                                                        onPressed: () {
+                                                          FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  'Products')
+                                                              .doc(data
+                                                                  .docs[index]
+                                                                  .id)
+                                                              .update({
+                                                            'name': name == ''
+                                                                ? data.docs[
+                                                                        index]
+                                                                    ['name']
+                                                                : name,
+                                                            'desc': desc == ''
+                                                                ? data.docs[
+                                                                        index]
+                                                                    ['desc']
+                                                                : desc,
+                                                          });
+                                                          Navigator.pop(
+                                                              context);
+                                                          Fluttertoast.showToast(
+                                                              msg:
+                                                                  'Updated succesfully!');
+                                                        },
+                                                        text: 'Continue'),
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          }));
+                                    },
+                                    icon: const Icon(
+                                      Icons.edit,
+                                      color: Colors.blue,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                             leading: CircleAvatar(
