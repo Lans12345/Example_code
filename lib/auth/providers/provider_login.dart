@@ -121,8 +121,7 @@ class _ProviderLoginState extends State<ProviderLogin> {
                   try {
                     var collection = FirebaseFirestore.instance
                         .collection('Providers')
-                        .where('id',
-                            isEqualTo: FirebaseAuth.instance.currentUser!.uid);
+                        .where('email', isEqualTo: email);
 
                     var querySnapshot = await collection.get();
                     if (mounted) {

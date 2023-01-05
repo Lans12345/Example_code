@@ -121,8 +121,7 @@ class _LoginPageState extends State<LoginPage> {
                   try {
                     var collection = FirebaseFirestore.instance
                         .collection('Users')
-                        .where('id',
-                            isEqualTo: FirebaseAuth.instance.currentUser!.uid);
+                        .where('email', isEqualTo: email);
 
                     var querySnapshot = await collection.get();
                     if (mounted) {
@@ -134,6 +133,8 @@ class _LoginPageState extends State<LoginPage> {
                         }
                       });
                     }
+
+                    print(isDeleted);
 
                     if (isDeleted == false) {
                       await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -162,6 +163,7 @@ class _LoginPageState extends State<LoginPage> {
                               ));
                     }
                   } catch (e) {
+                    print('errpr');
                     showDialog(
                         context: context,
                         builder: (context) => AlertDialog(
