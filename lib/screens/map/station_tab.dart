@@ -101,10 +101,18 @@ class _StationTabState extends State<StationTab> {
         const SizedBox(
           height: 20,
         ),
+        TextRegular(
+            text: 'Listed from highest to lowest rankings',
+            fontSize: 10,
+            color: Colors.grey),
+        const SizedBox(
+          height: 10,
+        ),
         StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance
                 .collection('Providers')
                 .where('type', isEqualTo: box.read('service'))
+                .orderBy('ratings')
                 .snapshots(),
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
