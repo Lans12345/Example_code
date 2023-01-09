@@ -112,7 +112,7 @@ class _StationTabState extends State<StationTab> {
             stream: FirebaseFirestore.instance
                 .collection('Providers')
                 .where('type', isEqualTo: box.read('service'))
-                .orderBy('ratings')
+                .orderBy('ratings', descending: true)
                 .snapshots(),
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
