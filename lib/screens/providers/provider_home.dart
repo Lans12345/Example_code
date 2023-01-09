@@ -262,14 +262,17 @@ class ProviderHome extends StatelessWidget {
             child: Scaffold(
               body: Column(
                 children: [
-                  const TabBar(labelColor: Colors.black, tabs: [
-                    Tab(
-                      text: 'Comments',
-                    ),
-                    Tab(
-                      text: 'Ratings',
-                    ),
-                  ]),
+                  const TabBar(
+                      labelStyle: TextStyle(fontFamily: 'QBold'),
+                      labelColor: Colors.black,
+                      tabs: [
+                        Tab(
+                          text: 'Comments',
+                        ),
+                        Tab(
+                          text: 'Ratings',
+                        ),
+                      ]),
                   Expanded(
                     child: SizedBox(
                       child: TabBarView(
