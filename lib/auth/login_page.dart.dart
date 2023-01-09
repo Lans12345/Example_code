@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:the_serve_new/auth/providers/provider_login.dart';
 import 'package:the_serve_new/auth/signup_page.dart.dart';
 import 'package:the_serve_new/screens/home_screen.dart';
@@ -140,8 +141,14 @@ class _LoginPageState extends State<LoginPage> {
                       await FirebaseAuth.instance.signInWithEmailAndPassword(
                           email: email, password: password);
 
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (context) => HomeScreen()));
+                      if (FirebaseAuth.instance.currentUser!.emailVerified ==
+                          false) {
+                        Fluttertoast.showToast(msg: 'Please Verify your email');
+                        await FirebaseAuth.instance.signOut();
+                      } else {
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (context) => HomeScreen()));
+                      }
                     } else {
                       showDialog(
                           context: context,

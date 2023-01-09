@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:the_serve_new/auth/login_page.dart.dart';
 import 'package:the_serve_new/auth/providers/provider_signup.dart';
 import 'package:the_serve_new/screens/providers/provider_home.dart';
@@ -138,8 +139,14 @@ class _ProviderLoginState extends State<ProviderLogin> {
                       await FirebaseAuth.instance.signInWithEmailAndPassword(
                           email: email, password: password);
 
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (context) => ProviderHome()));
+                      if (FirebaseAuth.instance.currentUser!.emailVerified ==
+                          false) {
+                        Fluttertoast.showToast(msg: 'Please Verify your email');
+                        await FirebaseAuth.instance.signOut();
+                      } else {
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (context) => ProviderHome()));
+                      }
                     } else {
                       showDialog(
                           context: context,

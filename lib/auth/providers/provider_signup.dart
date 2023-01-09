@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:the_serve_new/auth/providers/provider_login.dart';
 import 'package:the_serve_new/services/cloud_function/add_comp.dart';
@@ -174,6 +175,8 @@ class _ProviderSignupState extends State<ProviderSignup> {
 
   late String close = '';
   var isObscure = true;
+  var isObscure1 = true;
+  late String forgotPassword = '';
 
   var hasLoaded1 = false;
 
@@ -698,6 +701,46 @@ class _ProviderSignupState extends State<ProviderSignup> {
                 ),
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
+              child: TextFormField(
+                obscureText: isObscure1,
+                style: const TextStyle(
+                    color: Colors.black, fontFamily: 'QRegular'),
+                onChanged: (input) {
+                  forgotPassword = input;
+                },
+                decoration: InputDecoration(
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        isObscure1 = !isObscure1;
+                      });
+                    },
+                    icon: Icon(
+                      isObscure1 ? Icons.visibility : Icons.visibility_off,
+                      color: Colors.black,
+                    ),
+                  ),
+                  fillColor: Colors.grey[200],
+                  filled: true,
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(width: 1, color: Colors.white),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(width: 1, color: Colors.black),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  labelText: 'Forgot Password',
+                  labelStyle: const TextStyle(
+                    fontFamily: 'QRegular',
+                    color: Colors.black,
+                    fontSize: 12.0,
+                  ),
+                ),
+              ),
+            ),
             const SizedBox(
               height: 30,
             ),
@@ -709,7 +752,6 @@ class _ProviderSignupState extends State<ProviderSignup> {
               minWidth: 250,
               color: Colors.blue,
               onPressed: () async {
-                print(lat);
                 LocationPermission permission;
                 permission = await Geolocator.requestPermission();
 
@@ -720,97 +762,121 @@ class _ProviderSignupState extends State<ProviderSignup> {
 
                 permission = await Geolocator.requestPermission();
 
-                if (serviceEnabled == true) {
-                  try {
-                    await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                        email: email, password: password);
-                    addComp(name, contactNumber, email, url, imageURL, lat,
-                        long, course, close, open, address, imageURL1);
-                    showDialog(
-                        barrierDismissible: false,
-                        context: context,
-                        builder: (context) {
-                          return Dialog(
-                            child: SizedBox(
-                                height: 300,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Icon(
-                                      Icons.check_circle_outline_outlined,
-                                      size: 75,
-                                    ),
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
-                                    TextBold(
-                                        text: 'Registered Succesfully!',
-                                        fontSize: 18,
-                                        color: Colors.black),
-                                    const SizedBox(
-                                      height: 50,
-                                    ),
-                                    ButtonWidget(
-                                        onPressed: () async {
-                                          Navigator.of(context).pushReplacement(
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const ProviderLogin()));
-                                        },
-                                        text: 'Continue'),
-                                  ],
-                                )),
-                          );
-                        });
-                  } catch (e) {
-                    showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (context) => AlertDialog(
-                              content: Text(
-                                e.toString(),
-                                style: const TextStyle(fontFamily: 'QRegular'),
-                              ),
-                              actions: <Widget>[
-                                MaterialButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Text(
-                                    'Close',
-                                    style: TextStyle(
-                                        fontFamily: 'QRegular',
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ],
-                            ));
-                    await Geolocator.requestPermission();
-                  }
+                if (name == '' ||
+                    contactNumber == '' ||
+                    email == '' ||
+                    password == '' ||
+                    forgotPassword == '') {
+                  Fluttertoast.showToast(
+                      msg: 'Cannot procceed with missing fields!');
                 } else {
-                  showDialog(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (context) => AlertDialog(
-                            content: const Text(
-                              'Cannot Proceed. Location is off',
-                              style: TextStyle(fontFamily: 'QRegular'),
-                            ),
-                            actions: <Widget>[
-                              MaterialButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: const Text(
-                                  'Close',
-                                  style: TextStyle(
-                                      fontFamily: 'QRegular',
-                                      fontWeight: FontWeight.bold),
+                  if (password == forgotPassword) {
+                    if (serviceEnabled == true) {
+                      try {
+                        await FirebaseAuth.instance
+                            .createUserWithEmailAndPassword(
+                                email: email, password: password);
+                        addComp(name, contactNumber, email, url, imageURL, lat,
+                            long, course, close, open, address, imageURL1);
+                        showDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            builder: (context) {
+                              return Dialog(
+                                child: SizedBox(
+                                    height: 300,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        const Icon(
+                                          Icons.check_circle_outline_outlined,
+                                          size: 75,
+                                        ),
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        TextBold(
+                                            text: 'Registered Succesfully!',
+                                            fontSize: 18,
+                                            color: Colors.black),
+                                        const SizedBox(
+                                          height: 50,
+                                        ),
+                                        ButtonWidget(
+                                            onPressed: () async {
+                                              await FirebaseAuth
+                                                  .instance.currentUser!
+                                                  .sendEmailVerification();
+                                              Navigator.of(context).pushReplacement(
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          const ProviderLogin()));
+
+                                              Fluttertoast.showToast(
+                                                  msg:
+                                                      'Verification was sent to your email\nPlease verify your account');
+                                            },
+                                            text: 'Continue'),
+                                      ],
+                                    )),
+                              );
+                            });
+                      } catch (e) {
+                        showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (context) => AlertDialog(
+                                  content: Text(
+                                    e.toString(),
+                                    style:
+                                        const TextStyle(fontFamily: 'QRegular'),
+                                  ),
+                                  actions: <Widget>[
+                                    MaterialButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text(
+                                        'Close',
+                                        style: TextStyle(
+                                            fontFamily: 'QRegular',
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ],
+                                ));
+                        await Geolocator.requestPermission();
+                      }
+                    } else {
+                      showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (context) => AlertDialog(
+                                content: const Text(
+                                  'Cannot Proceed. Location is off',
+                                  style: TextStyle(fontFamily: 'QRegular'),
                                 ),
-                              ),
-                            ],
-                          ));
+                                actions: <Widget>[
+                                  MaterialButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text(
+                                      'Close',
+                                      style: TextStyle(
+                                          fontFamily: 'QRegular',
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ],
+                              ));
+                    }
+                  } else {
+                    Fluttertoast.showToast(msg: 'Password do not match');
+                  }
                 }
+                print(lat);
               },
               child:
                   TextBold(text: 'Register', fontSize: 18, color: Colors.white),
