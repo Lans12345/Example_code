@@ -152,7 +152,7 @@ class _ProviderLoginState extends State<ProviderLogin> {
                           context: context,
                           builder: (context) => AlertDialog(
                                 content: TextRegular(
-                                    text: "This account has been deleted!",
+                                    text: "This account is currently banned!",
                                     color: Colors.black,
                                     fontSize: 12),
                                 actions: <Widget>[
