@@ -15,7 +15,7 @@ class ProviderHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 2,
       child: Scaffold(
         backgroundColor: Colors.grey[200],
         appBar: AppBar(
@@ -29,15 +29,11 @@ class ProviderHome extends StatelessWidget {
           bottom: const TabBar(tabs: [
             Tab(
               icon: Icon(Icons.post_add_rounded),
-              text: 'Products',
+              text: 'Items/Services',
             ),
             Tab(
               icon: Icon(Icons.feedback),
               text: 'Feedbacks',
-            ),
-            Tab(
-              icon: Icon(Icons.star),
-              text: 'Ratings',
             ),
           ]),
           automaticallyImplyLeading: false,
@@ -129,227 +125,267 @@ class ProviderHome extends StatelessWidget {
                       itemBuilder: (context, index) {
                         return Padding(
                           padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                          child: ListTile(
-                            tileColor: Colors.white,
-                            title: TextBold(
-                                text: data.docs[index]['name'],
-                                fontSize: 14,
-                                color: Colors.black),
-                            subtitle: TextBold(
-                                text: data.docs[index]['desc'],
-                                fontSize: 12,
-                                color: Colors.grey),
-                            trailing: SizedBox(
-                              width: 100,
-                              child: Row(
-                                children: [
-                                  IconButton(
-                                    onPressed: () {
-                                      FirebaseFirestore.instance
-                                          .collection('Products')
-                                          .doc(data.docs[index].id)
-                                          .delete();
-                                    },
-                                    icon: const Icon(
-                                      Icons.delete,
-                                      color: Colors.red,
+                          child: Card(
+                            child: ListTile(
+                              tileColor: Colors.white,
+                              title: TextBold(
+                                  text: data.docs[index]['name'],
+                                  fontSize: 14,
+                                  color: Colors.black),
+                              subtitle: TextBold(
+                                  text: data.docs[index]['desc'],
+                                  fontSize: 12,
+                                  color: Colors.grey),
+                              trailing: SizedBox(
+                                width: 100,
+                                child: Row(
+                                  children: [
+                                    IconButton(
+                                      onPressed: () {
+                                        FirebaseFirestore.instance
+                                            .collection('Products')
+                                            .doc(data.docs[index].id)
+                                            .delete();
+                                      },
+                                      icon: const Icon(
+                                        Icons.delete,
+                                        color: Colors.red,
+                                      ),
                                     ),
-                                  ),
-                                  IconButton(
-                                    onPressed: () {
-                                      showDialog(
-                                          context: context,
-                                          builder: ((context) {
-                                            return Dialog(
-                                              child: SizedBox(
-                                                height: 250,
-                                                child: Column(
-                                                  children: [
-                                                    SizedBox(
-                                                      height: 20,
-                                                    ),
-                                                    Padding(
-                                                      padding: const EdgeInsets
-                                                              .fromLTRB(
-                                                          20, 5, 20, 5),
-                                                      child: TextFormField(
-                                                        decoration:
-                                                            InputDecoration(
-                                                          hintText:
-                                                              data.docs[index]
-                                                                  ['name'],
-                                                        ),
-                                                        onChanged: (_input) {
-                                                          name = _input;
-                                                        },
+                                    IconButton(
+                                      onPressed: () {
+                                        showDialog(
+                                            context: context,
+                                            builder: ((context) {
+                                              return Dialog(
+                                                child: SizedBox(
+                                                  height: 250,
+                                                  child: Column(
+                                                    children: [
+                                                      const SizedBox(
+                                                        height: 20,
                                                       ),
-                                                    ),
-                                                    Padding(
-                                                      padding: const EdgeInsets
-                                                              .fromLTRB(
-                                                          20, 5, 20, 5),
-                                                      child: TextFormField(
-                                                        decoration:
-                                                            InputDecoration(
-                                                          hintText:
-                                                              data.docs[index]
-                                                                  ['desc'],
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .fromLTRB(
+                                                                20, 5, 20, 5),
+                                                        child: TextFormField(
+                                                          decoration:
+                                                              InputDecoration(
+                                                            hintText:
+                                                                data.docs[index]
+                                                                    ['name'],
+                                                          ),
+                                                          onChanged: (input) {
+                                                            name = input;
+                                                          },
                                                         ),
-                                                        onChanged: (_input) {
-                                                          desc = _input;
-                                                        },
                                                       ),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 20,
-                                                    ),
-                                                    ButtonWidget(
-                                                        onPressed: () {
-                                                          FirebaseFirestore
-                                                              .instance
-                                                              .collection(
-                                                                  'Products')
-                                                              .doc(data
-                                                                  .docs[index]
-                                                                  .id)
-                                                              .update({
-                                                            'name': name == ''
-                                                                ? data.docs[
-                                                                        index]
-                                                                    ['name']
-                                                                : name,
-                                                            'desc': desc == ''
-                                                                ? data.docs[
-                                                                        index]
-                                                                    ['desc']
-                                                                : desc,
-                                                          });
-                                                          Navigator.pop(
-                                                              context);
-                                                          Fluttertoast.showToast(
-                                                              msg:
-                                                                  'Updated succesfully!');
-                                                        },
-                                                        text: 'Continue'),
-                                                  ],
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .fromLTRB(
+                                                                20, 5, 20, 5),
+                                                        child: TextFormField(
+                                                          decoration:
+                                                              InputDecoration(
+                                                            hintText:
+                                                                data.docs[index]
+                                                                    ['desc'],
+                                                          ),
+                                                          onChanged: (input) {
+                                                            desc = input;
+                                                          },
+                                                        ),
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 20,
+                                                      ),
+                                                      ButtonWidget(
+                                                          onPressed: () {
+                                                            FirebaseFirestore
+                                                                .instance
+                                                                .collection(
+                                                                    'Products')
+                                                                .doc(data
+                                                                    .docs[index]
+                                                                    .id)
+                                                                .update({
+                                                              'name': name == ''
+                                                                  ? data.docs[
+                                                                          index]
+                                                                      ['name']
+                                                                  : name,
+                                                              'desc': desc == ''
+                                                                  ? data.docs[
+                                                                          index]
+                                                                      ['desc']
+                                                                  : desc,
+                                                            });
+                                                            Navigator.pop(
+                                                                context);
+                                                            Fluttertoast.showToast(
+                                                                msg:
+                                                                    'Updated succesfully!');
+                                                          },
+                                                          text: 'Continue'),
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                            );
-                                          }));
-                                    },
-                                    icon: const Icon(
-                                      Icons.edit,
-                                      color: Colors.blue,
+                                              );
+                                            }));
+                                      },
+                                      icon: const Icon(
+                                        Icons.edit,
+                                        color: Colors.blue,
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
-                            leading: CircleAvatar(
-                              minRadius: 25,
-                              maxRadius: 25,
-                              backgroundImage:
-                                  NetworkImage(data.docs[index]['imageURL']),
-                              backgroundColor: Colors.transparent,
+                              leading: CircleAvatar(
+                                minRadius: 25,
+                                maxRadius: 25,
+                                backgroundImage:
+                                    NetworkImage(data.docs[index]['imageURL']),
+                                backgroundColor: Colors.transparent,
+                              ),
                             ),
                           ),
                         );
                       });
                 }),
           ),
-          StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('Comments')
-                  .where('uid',
-                      isEqualTo: FirebaseAuth.instance.currentUser!.uid)
-                  .snapshots(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (snapshot.hasError) {
-                  print('error');
-                  return const Center(child: Text('Error'));
-                }
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  print('waiting');
-                  return const Padding(
-                    padding: EdgeInsets.only(top: 50),
-                    child: Center(
-                        child: CircularProgressIndicator(
-                      color: Colors.black,
-                    )),
-                  );
-                }
+          DefaultTabController(
+            length: 2,
+            child: Scaffold(
+              body: Column(
+                children: [
+                  const TabBar(labelColor: Colors.black, tabs: [
+                    Tab(
+                      text: 'Comments',
+                    ),
+                    Tab(
+                      text: 'Ratings',
+                    ),
+                  ]),
+                  Expanded(
+                    child: SizedBox(
+                      child: TabBarView(
+                        children: [
+                          StreamBuilder<QuerySnapshot>(
+                              stream: FirebaseFirestore.instance
+                                  .collection('Comments')
+                                  .where('uid',
+                                      isEqualTo: FirebaseAuth
+                                          .instance.currentUser!.uid)
+                                  .snapshots(),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                                if (snapshot.hasError) {
+                                  print('error');
+                                  return const Center(child: Text('Error'));
+                                }
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  print('waiting');
+                                  return const Padding(
+                                    padding: EdgeInsets.only(top: 50),
+                                    child: Center(
+                                        child: CircularProgressIndicator(
+                                      color: Colors.black,
+                                    )),
+                                  );
+                                }
 
-                final data = snapshot.requireData;
-                return ListView.builder(
-                    itemCount: snapshot.data?.size ?? 0,
-                    itemBuilder: ((context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                        child: ListTile(
-                          tileColor: Colors.white,
-                          title: TextRegular(
-                              text: data.docs[index]['comment'],
-                              fontSize: 12,
-                              color: Colors.black),
-                          subtitle: TextRegular(
-                              text: data.docs[index]['name'],
-                              fontSize: 10,
-                              color: Colors.grey),
-                        ),
-                      );
-                    }));
-              }),
-          StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('Ratings')
-                  .where('uid',
-                      isEqualTo: FirebaseAuth.instance.currentUser!.uid)
-                  .snapshots(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (snapshot.hasError) {
-                  print('error');
-                  return const Center(child: Text('Error'));
-                }
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  print('waiting');
-                  return const Padding(
-                    padding: EdgeInsets.only(top: 50),
-                    child: Center(
-                        child: CircularProgressIndicator(
-                      color: Colors.black,
-                    )),
-                  );
-                }
+                                final data = snapshot.requireData;
+                                return ListView.builder(
+                                    itemCount: snapshot.data?.size ?? 0,
+                                    itemBuilder: ((context, index) {
+                                      return Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            10, 5, 10, 5),
+                                        child: Card(
+                                          child: ListTile(
+                                            tileColor: Colors.white,
+                                            title: TextRegular(
+                                                text: data.docs[index]
+                                                    ['comment'],
+                                                fontSize: 12,
+                                                color: Colors.black),
+                                            subtitle: TextRegular(
+                                                text: data.docs[index]['name'],
+                                                fontSize: 10,
+                                                color: Colors.grey),
+                                          ),
+                                        ),
+                                      );
+                                    }));
+                              }),
+                          StreamBuilder<QuerySnapshot>(
+                              stream: FirebaseFirestore.instance
+                                  .collection('Ratings')
+                                  .where('uid',
+                                      isEqualTo: FirebaseAuth
+                                          .instance.currentUser!.uid)
+                                  .snapshots(),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                                if (snapshot.hasError) {
+                                  print('error');
+                                  return const Center(child: Text('Error'));
+                                }
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  print('waiting');
+                                  return const Padding(
+                                    padding: EdgeInsets.only(top: 50),
+                                    child: Center(
+                                        child: CircularProgressIndicator(
+                                      color: Colors.black,
+                                    )),
+                                  );
+                                }
 
-                final data = snapshot.requireData;
-                return ListView.builder(
-                    itemCount: snapshot.data?.size ?? 0,
-                    itemBuilder: ((context, index) {
-                      return ListTile(
-                        subtitle: TextRegular(
-                            text: '${data.docs[index]['star']} ★',
-                            fontSize: 12,
-                            color: Colors.amber),
-                        title: TextBold(
-                            text: data.docs[index]['name'],
-                            fontSize: 14,
-                            color: Colors.black),
-                        trailing: TextRegular(
-                            text: data.docs[index]['date'],
-                            fontSize: 12,
-                            color: Colors.grey),
-                        leading: CircleAvatar(
-                          minRadius: 25,
-                          maxRadius: 25,
-                          backgroundImage:
-                              NetworkImage(data.docs[index]['profilePicture']),
-                        ),
-                        tileColor: Colors.white,
-                      );
-                    }));
-              })
+                                final data = snapshot.requireData;
+                                return ListView.builder(
+                                    itemCount: snapshot.data?.size ?? 0,
+                                    itemBuilder: ((context, index) {
+                                      return Card(
+                                        child: ListTile(
+                                          subtitle: TextRegular(
+                                              text:
+                                                  '${data.docs[index]['star']} ★',
+                                              fontSize: 12,
+                                              color: Colors.amber),
+                                          title: TextBold(
+                                              text: data.docs[index]['name'],
+                                              fontSize: 14,
+                                              color: Colors.black),
+                                          trailing: TextRegular(
+                                              text: data.docs[index]['date'],
+                                              fontSize: 12,
+                                              color: Colors.grey),
+                                          leading: CircleAvatar(
+                                            minRadius: 25,
+                                            maxRadius: 25,
+                                            backgroundImage: NetworkImage(data
+                                                .docs[index]['profilePicture']),
+                                          ),
+                                          tileColor: Colors.white,
+                                        ),
+                                      );
+                                    }));
+                              })
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ]),
       ),
     );
