@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:the_serve_new/screens/providers/provider_home.dart';
@@ -94,6 +96,11 @@ class _AddProductState extends State<AddProduct> {
       }
     }
   }
+
+  final Stream<DocumentSnapshot> userData = FirebaseFirestore.instance
+      .collection('Providers')
+      .doc(FirebaseAuth.instance.currentUser!.uid)
+      .snapshots();
 
   @override
   Widget build(BuildContext context) {
@@ -200,24 +207,44 @@ class _AddProductState extends State<AddProduct> {
                             style: TextStyle(fontFamily: 'QRegular'),
                           ),
                           actions: <Widget>[
-                            MaterialButton(
-                              onPressed: () async {
-                                addProduct(
-                                    productNameController.text,
-                                    productDescController.text,
-                                    productPriceController.text,
-                                    imageURL);
-                                Navigator.of(context).pushReplacement(
-                                    MaterialPageRoute(
-                                        builder: (context) => ProviderHome()));
-                              },
-                              child: const Text(
-                                'Continue',
-                                style: TextStyle(
-                                    fontFamily: 'QRegular',
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
+                            StreamBuilder<DocumentSnapshot>(
+                                stream: userData,
+                                builder: (context,
+                                    AsyncSnapshot<DocumentSnapshot> snapshot) {
+                                  if (!snapshot.hasData) {
+                                    return const Center(
+                                        child: CircularProgressIndicator());
+                                  } else if (snapshot.hasError) {
+                                    return const Center(
+                                        child: Text('Something went wrong'));
+                                  } else if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const Center(
+                                        child: CircularProgressIndicator());
+                                  }
+
+                                  dynamic data = snapshot.data;
+                                  return MaterialButton(
+                                    onPressed: () async {
+                                      addProduct(
+                                          productNameController.text,
+                                          productDescController.text,
+                                          productPriceController.text,
+                                          imageURL,
+                                          data['type']);
+                                      Navigator.of(context).pushReplacement(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ProviderHome()));
+                                    },
+                                    child: const Text(
+                                      'Continue',
+                                      style: TextStyle(
+                                          fontFamily: 'QRegular',
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  );
+                                }),
                           ],
                         ));
               },
