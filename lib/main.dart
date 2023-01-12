@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:the_serve_new/auth/login_page.dart.dart';
 import 'package:the_serve_new/firebase_options.dart';
+import 'package:the_serve_new/screens/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,9 +17,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       title: 'The Serve',
-      home: LoginPage(),
+      home: HomeScreen(),
     );
   }
 }
