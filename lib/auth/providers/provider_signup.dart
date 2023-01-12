@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -397,117 +398,71 @@ class _ProviderSignupState extends State<ProviderSignup> {
               ),
             ),
             TextRegular(text: 'Sector', fontSize: 12, color: Colors.black),
+            StreamBuilder<QuerySnapshot>(
+                stream:
+                    FirebaseFirestore.instance.collection('Categ').snapshots(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.hasError) {
+                    print('error');
+                    return const Center(child: Text('Error'));
+                  }
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    print('waiting');
+                    return const Padding(
+                      padding: EdgeInsets.only(top: 50),
+                      child: Center(
+                          child: CircularProgressIndicator(
+                        color: Colors.black,
+                      )),
+                    );
+                  }
+
+                  final data = snapshot.requireData;
+                  return Padding(
+                    padding:
+                        const EdgeInsets.only(left: 30, right: 30, top: 10),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 2, 20, 2),
+                        child: DropdownButton(
+                          underline: Container(color: Colors.transparent),
+                          iconEnabledColor: Colors.black,
+                          isExpanded: true,
+                          value: dropDownValue1,
+                          items: [
+                            for (int i = 0; i < data.size; i++)
+                              DropdownMenuItem(
+                                onTap: () {
+                                  course = data.docs[i]['name'];
+                                },
+                                value: i,
+                                child: Center(
+                                    child: Row(children: [
+                                  Text(data.docs[i]['name'],
+                                      style: const TextStyle(
+                                        fontFamily: 'QRegular',
+                                        color: Colors.black,
+                                      ))
+                                ])),
+                              ),
+                          ],
+                          onChanged: (value) {
+                            setState(() {
+                              dropDownValue1 = int.parse(value.toString());
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                  );
+                }),
             Padding(
-              padding: const EdgeInsets.only(left: 30, right: 30, top: 10),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 2, 20, 2),
-                  child: DropdownButton(
-                    underline: Container(color: Colors.transparent),
-                    iconEnabledColor: Colors.black,
-                    isExpanded: true,
-                    value: dropDownValue1,
-                    items: [
-                      DropdownMenuItem(
-                        onTap: () {
-                          course = "Laundry Shops";
-                        },
-                        value: 0,
-                        child: Center(
-                            child: Row(children: const [
-                          Text("Laundry Shops",
-                              style: TextStyle(
-                                fontFamily: 'QRegular',
-                                color: Colors.black,
-                              ))
-                        ])),
-                      ),
-                      DropdownMenuItem(
-                        onTap: () {
-                          course = "Water Refilling Stations";
-                        },
-                        value: 1,
-                        child: Center(
-                            child: Row(children: const [
-                          Text("Water Refilling Stations",
-                              style: TextStyle(
-                                fontFamily: 'QRegular',
-                                color: Colors.black,
-                              ))
-                        ])),
-                      ),
-                      DropdownMenuItem(
-                        onTap: () {
-                          course = "Barber Shops and Salons";
-                        },
-                        value: 2,
-                        child: Center(
-                            child: Row(children: const [
-                          Text("Barber Shops and Salons",
-                              style: TextStyle(
-                                fontFamily: 'QRegular',
-                                color: Colors.black,
-                              ))
-                        ])),
-                      ),
-                      DropdownMenuItem(
-                        onTap: () {
-                          course = "Auto-Repair Shops";
-                        },
-                        value: 3,
-                        child: Center(
-                            child: Row(children: const [
-                          Text("Auto-Repair Shops",
-                              style: TextStyle(
-                                fontFamily: 'QRegular',
-                                color: Colors.black,
-                              ))
-                        ])),
-                      ),
-                      DropdownMenuItem(
-                        onTap: () {
-                          course = "Gasoline Stations";
-                        },
-                        value: 4,
-                        child: Center(
-                            child: Row(children: const [
-                          Text("Gasoline Stations",
-                              style: TextStyle(
-                                fontFamily: 'QRegular',
-                                color: Colors.black,
-                              ))
-                        ])),
-                      ),
-                      DropdownMenuItem(
-                        onTap: () {
-                          course = "Print, Xerox, Laminate Services";
-                        },
-                        value: 5,
-                        child: Center(
-                            child: Row(children: const [
-                          Text("Print, Xerox, Laminate Services",
-                              style: TextStyle(
-                                fontFamily: 'QRegular',
-                                color: Colors.black,
-                              ))
-                        ])),
-                      ),
-                    ],
-                    onChanged: (value) {
-                      setState(() {
-                        dropDownValue1 = int.parse(value.toString());
-                      });
-                    },
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
+              padding: const EdgeInsets.fromLTRB(30, 20, 30, 10),
               child: TextFormField(
                 style: const TextStyle(
                     color: Colors.black, fontFamily: 'QRegular'),
