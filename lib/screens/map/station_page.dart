@@ -122,8 +122,8 @@ class _StationPageState extends State<StationPage> {
                                         child: Container(
                                           decoration: BoxDecoration(
                                             image: DecorationImage(
-                                              image:
-                                                  NetworkImage(data['permit']),
+                                              image: NetworkImage(
+                                                  data['permit'][0]),
                                             ),
                                           ),
                                           height: 400,
@@ -135,13 +135,27 @@ class _StationPageState extends State<StationPage> {
                               icon: const Icon(Icons.info, color: Colors.blue),
                             ),
                           ),
-                          Container(
-                            height: 200,
+                          SizedBox(
                             width: 300,
-                            decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: NetworkImage(data['logo']))),
+                            height: 300,
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: [
+                                for (int i = 0; i < data['logo'].length; i++)
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Container(
+                                      height: 200,
+                                      width: 200,
+                                      decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                              fit: BoxFit.cover,
+                                              image: NetworkImage(
+                                                  data['logo'][i]))),
+                                    ),
+                                  ),
+                              ],
+                            ),
                           ),
                           const SizedBox(
                             height: 5,

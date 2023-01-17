@@ -244,7 +244,7 @@ class _MapTabState extends State<MapTab> {
                                       minRadius: 18,
                                       maxRadius: 18,
                                       backgroundImage: NetworkImage(
-                                          data.docs[index]['logo']),
+                                          data.docs[index]['logo'][0]),
                                       backgroundColor: Colors.grey,
                                     ),
                                     title: TextBold(

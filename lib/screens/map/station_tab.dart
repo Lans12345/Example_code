@@ -162,7 +162,7 @@ class _StationTabState extends State<StationTab> {
                                       image: DecorationImage(
                                           fit: BoxFit.cover,
                                           image: NetworkImage(
-                                              data.docs[index]['logo']))),
+                                              data.docs[index]['logo'][0]))),
                                 ),
                                 title: TextBold(
                                     text: data.docs[index]['name'],

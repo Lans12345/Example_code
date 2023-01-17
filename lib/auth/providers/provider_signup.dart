@@ -276,7 +276,7 @@ class _ProviderSignupState extends State<ProviderSignup> {
             hasLoaded
                 ? GestureDetector(
                     onTap: () {
-                      uploadPicture('camera');
+                      uploadPicture('gallery');
                     },
                     child: CircleAvatar(
                       backgroundColor: Colors.grey,
@@ -287,7 +287,7 @@ class _ProviderSignupState extends State<ProviderSignup> {
                   )
                 : GestureDetector(
                     onTap: () {
-                      uploadPicture('camera');
+                      uploadPicture('gallery');
                     },
                     child: const CircleAvatar(
                       backgroundColor: Colors.grey,
@@ -583,7 +583,7 @@ class _ProviderSignupState extends State<ProviderSignup> {
             hasLoaded1
                 ? GestureDetector(
                     onTap: () {
-                      uploadPicture1('camera');
+                      uploadPicture1('gallery');
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -598,7 +598,7 @@ class _ProviderSignupState extends State<ProviderSignup> {
                   )
                 : GestureDetector(
                     onTap: () {
-                      uploadPicture1('camera');
+                      uploadPicture1('gallery');
                     },
                     child: Container(
                       height: 100,
