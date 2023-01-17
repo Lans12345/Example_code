@@ -321,6 +321,21 @@ class ProviderHome extends StatelessWidget {
                                                 text: data.docs[index]['name'],
                                                 fontSize: 10,
                                                 color: Colors.grey),
+                                            trailing: IconButton(
+                                              onPressed: (() {
+                                                FirebaseFirestore.instance
+                                                    .collection('Comments')
+                                                    .doc(data.docs[index].id)
+                                                    .delete();
+                                                Fluttertoast.showToast(
+                                                    msg:
+                                                        'Comment Deleted Succesfully!');
+                                              }),
+                                              icon: Icon(
+                                                Icons.delete,
+                                                color: Colors.red,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       );
