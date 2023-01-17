@@ -34,6 +34,8 @@ class _ProviderSignupState extends State<ProviderSignup> {
 
   late String address;
 
+  var imageUrls = [];
+
   Future<Position> determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -91,6 +93,7 @@ class _ProviderSignupState extends State<ProviderSignup> {
   late File imageFile;
 
   late String imageURL = '';
+  var imageUrlsPermit = [];
   var course = 'Laundry Shops';
 
   var dropDownValue1 = 0;
@@ -142,9 +145,14 @@ class _ProviderSignupState extends State<ProviderSignup> {
             .ref('Logo/$fileName')
             .getDownloadURL();
 
+        imageUrls.add(imageURL);
+
         setState(() {
           hasLoaded = true;
         });
+
+        Fluttertoast.showToast(
+            msg: 'Image added! You can upload multiple images');
 
         Navigator.of(context).pop();
       } on firebase_storage.FirebaseException catch (error) {
@@ -234,11 +242,15 @@ class _ProviderSignupState extends State<ProviderSignup> {
             .ref('Permit/$fileName')
             .getDownloadURL();
 
+        imageUrlsPermit.add(imageURL1);
+
         setState(() {
           hasLoaded1 = true;
         });
 
         Navigator.of(context).pop();
+        Fluttertoast.showToast(
+            msg: 'Image added! You can upload multiple images');
       } on firebase_storage.FirebaseException catch (error) {
         if (kDebugMode) {
           print(error);
@@ -262,15 +274,20 @@ class _ProviderSignupState extends State<ProviderSignup> {
               height: 50,
             ),
             hasLoaded
-                ? CircleAvatar(
-                    backgroundColor: Colors.grey,
-                    minRadius: 50,
-                    maxRadius: 50,
-                    backgroundImage: NetworkImage(imageURL),
+                ? GestureDetector(
+                    onTap: () {
+                      uploadPicture('camera');
+                    },
+                    child: CircleAvatar(
+                      backgroundColor: Colors.grey,
+                      minRadius: 50,
+                      maxRadius: 50,
+                      backgroundImage: NetworkImage(imageUrls[0]),
+                    ),
                   )
                 : GestureDetector(
                     onTap: () {
-                      uploadPicture('gallery');
+                      uploadPicture('camera');
                     },
                     child: const CircleAvatar(
                       backgroundColor: Colors.grey,
@@ -564,18 +581,24 @@ class _ProviderSignupState extends State<ProviderSignup> {
               height: 5,
             ),
             hasLoaded1
-                ? Container(
-                    decoration: BoxDecoration(
-                      color: Colors.transparent,
-                      image: DecorationImage(
-                          image: NetworkImage(imageURL1), fit: BoxFit.cover),
+                ? GestureDetector(
+                    onTap: () {
+                      uploadPicture1('camera');
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        image: DecorationImage(
+                            image: NetworkImage(imageUrlsPermit[0]),
+                            fit: BoxFit.cover),
+                      ),
+                      height: 100,
+                      width: 100,
                     ),
-                    height: 100,
-                    width: 100,
                   )
                 : GestureDetector(
                     onTap: () {
-                      uploadPicture1('gallery');
+                      uploadPicture1('camera');
                     },
                     child: Container(
                       height: 100,
@@ -687,7 +710,7 @@ class _ProviderSignupState extends State<ProviderSignup> {
                     borderSide: const BorderSide(width: 1, color: Colors.black),
                     borderRadius: BorderRadius.circular(5),
                   ),
-                  labelText: 'Forgot Password',
+                  labelText: 'Confirm Password',
                   labelStyle: const TextStyle(
                     fontFamily: 'QRegular',
                     color: Colors.black,
@@ -731,8 +754,19 @@ class _ProviderSignupState extends State<ProviderSignup> {
                         await FirebaseAuth.instance
                             .createUserWithEmailAndPassword(
                                 email: email, password: password);
-                        addComp(name, contactNumber, email, url, imageURL, lat,
-                            long, course, close, open, address, imageURL1);
+                        addComp(
+                            name,
+                            contactNumber,
+                            email,
+                            url,
+                            imageUrls,
+                            lat,
+                            long,
+                            course,
+                            close,
+                            open,
+                            address,
+                            imageUrlsPermit);
                         showDialog(
                             barrierDismissible: false,
                             context: context,
