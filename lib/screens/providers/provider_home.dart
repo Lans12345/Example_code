@@ -10,8 +10,10 @@ import 'package:the_serve_new/widgets/text_widget.dart';
 import '../terms_conditions_page.dart';
 
 class ProviderHome extends StatelessWidget {
-  late String name;
-  late String desc;
+  late String name = '';
+  late String desc = '';
+
+  late String price = '';
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -99,8 +101,8 @@ class ProviderHome extends StatelessWidget {
             body: StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance
                     .collection('Products')
-                    .where('uid',
-                        isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+                    // .where('uid',
+                    //     isEqualTo: FirebaseAuth.instance.currentUser!.uid)
                     .snapshots(),
                 builder: (BuildContext context,
                     AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -159,11 +161,28 @@ class ProviderHome extends StatelessWidget {
                                             builder: ((context) {
                                               return Dialog(
                                                 child: SizedBox(
-                                                  height: 250,
+                                                  height: 280,
                                                   child: Column(
                                                     children: [
                                                       const SizedBox(
                                                         height: 20,
+                                                      ),
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .fromLTRB(
+                                                                20, 5, 20, 5),
+                                                        child: TextFormField(
+                                                          decoration:
+                                                              InputDecoration(
+                                                            hintText: "₱" +
+                                                                data.docs[index]
+                                                                    ['price'],
+                                                          ),
+                                                          onChanged: (input) {
+                                                            price = input;
+                                                          },
+                                                        ),
                                                       ),
                                                       Padding(
                                                         padding:
@@ -222,6 +241,12 @@ class ProviderHome extends StatelessWidget {
                                                                           index]
                                                                       ['desc']
                                                                   : desc,
+                                                              'price': price ==
+                                                                      ''
+                                                                  ? data.docs[
+                                                                          index]
+                                                                      ['price']
+                                                                  : price,
                                                             });
                                                             Navigator.pop(
                                                                 context);
