@@ -119,6 +119,7 @@ class _ProviderLoginState extends State<ProviderLogin> {
                 onPressed: () async {
                   late bool isDeleted;
                   late var status;
+                  late String condition;
                   try {
                     var collection = FirebaseFirestore.instance
                         .collection('Providers')
@@ -131,6 +132,7 @@ class _ProviderLoginState extends State<ProviderLogin> {
                           Map<String, dynamic> data =
                               queryDocumentSnapshot.data();
                           isDeleted = data['isDeleted'];
+                          condition = data['status'];
                         }
                       });
                     }
@@ -139,13 +141,21 @@ class _ProviderLoginState extends State<ProviderLogin> {
                       await FirebaseAuth.instance.signInWithEmailAndPassword(
                           email: email, password: password);
 
-                      if (FirebaseAuth.instance.currentUser!.emailVerified ==
-                          false) {
-                        Fluttertoast.showToast(msg: 'Please Verify your email');
-                        await FirebaseAuth.instance.signOut();
+                      if (condition == 'Accepted') {
+                        if (FirebaseAuth.instance.currentUser!.emailVerified ==
+                            false) {
+                          Fluttertoast.showToast(
+                              msg: 'Please Verify your email');
+                          await FirebaseAuth.instance.signOut();
+                        } else {
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) => ProviderHome()));
+                        }
                       } else {
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (context) => ProviderHome()));
+                        Fluttertoast.showToast(
+                            msg: 'Admin has not been approved your request!');
+                        await FirebaseAuth.instance.signOut();
                       }
                     } else {
                       showDialog(
