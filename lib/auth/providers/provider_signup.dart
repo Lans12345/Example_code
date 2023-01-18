@@ -236,10 +236,10 @@ class _ProviderSignupState extends State<ProviderSignup> {
         );
 
         await firebase_storage.FirebaseStorage.instance
-            .ref('Permit/$fileName')
+            .ref('Permit/$fileName1')
             .putFile(imageFile1);
         imageURL1 = await firebase_storage.FirebaseStorage.instance
-            .ref('Permit/$fileName')
+            .ref('Permit/$fileName1')
             .getDownloadURL();
 
         imageUrlsPermit.add(imageURL1);
