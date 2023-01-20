@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:the_serve_new/auth/forgot_password.dart';
 import 'package:the_serve_new/auth/providers/provider_login.dart';
 import 'package:the_serve_new/auth/signup_page.dart.dart';
 import 'package:the_serve_new/screens/home_screen.dart';
@@ -226,6 +227,15 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ],
               ),
+              TextButton(
+                  onPressed: (() {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => ForgotPasswordPage()));
+                  }),
+                  child: TextBold(
+                      text: 'Forgot Password?',
+                      fontSize: 12,
+                      color: Colors.blue)),
               const SizedBox(
                 height: 50,
               ),
